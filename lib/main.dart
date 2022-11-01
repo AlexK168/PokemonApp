@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'pages/pokemons_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pokemon_app/services/api_services/pokemon_list_service.dart';
+import 'pages/pokemon_list_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +17,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider(
+            create: (context) => PokemonListService()
+          )
+        ],
+        child: const MyHomePage(title: 'Flutter Demo Home Page')
+      ),
     );
   }
 }
@@ -32,6 +41,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return const PokemonsPage();
+    return const PokemonListPage();
   }
 }
