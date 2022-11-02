@@ -20,61 +20,71 @@ class _PokemonListPageState extends State<PokemonListPage> {
       create: (context) => PokemonListBloc(
         RepositoryProvider.of<PokemonListService>(context)
       )..add(LoadFromApiEvent()),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: BlocBuilder<PokemonListBloc, PokemonListState>(
-          builder: (context, state) {
-            if (state is LoadingState) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            else if(state is LoadedState) {
-              return RefreshIndicator(
-                onRefresh: () async {
-                  BlocProvider.of<PokemonListBloc>(context).add(LoadFromApiEvent());
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      Expanded(
-                          child: ListView.separated(
-                            itemCount: state.pokemonList.length,
-                            itemBuilder: ((context, index) => ListTile(
-                              title: Text(state.pokemonList[index].name),
-                            )),
-                            separatorBuilder: (context, index) => const Divider(),
-                          )
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.arrow_back),
-                          ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.arrow_forward),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              );
-            }
-            else if (state is ErrorState) {
-              return Center(
-                child: Text(getErrorString(state)),
-              );
-            }
-            return Container();
-          }
-        ),
+      child: BlocBuilder<PokemonListBloc, PokemonListState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(widget.title),
+              actions: [
+                IconButton(
+                  onPressed: () async {
+                    BlocProvider.of<PokemonListBloc>(context).add(LoadFromApiEvent());
+                  },
+                  icon: const Icon(Icons.refresh))
+              ],
+            ),
+            body: Builder(
+              builder: (context) {
+                if (state is LoadingState) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                else if(state is LoadedState) {
+                  return Container(
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
+                      children: [
+                        Expanded(
+                            child: ListView.separated(
+                              itemCount: state.pokemonList.length,
+                              itemBuilder: ((context, index) => ListTile(
+                                title: Text(state.pokemonList[index].name),
+                              )),
+                              separatorBuilder: (context, index) => const Divider(),
+                            )
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            IconButton(
+                              onPressed: state.startOfList ? null : () {
+                                BlocProvider.of<PokemonListBloc>(context).add(LoadPrevFromApiEvent());
+                              },
+                              icon: const Icon(Icons.arrow_back),
+                            ),
+                            IconButton(
+                              onPressed: state.endOfList ? null : () {
+                                BlocProvider.of<PokemonListBloc>(context).add(LoadNextFromApiEvent());
+                              },
+                              icon: const Icon(Icons.arrow_forward),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                }
+                else if (state is ErrorState) {
+                  return Center(
+                    child: Text(getErrorString(state)),
+                  );
+                }
+                return Container();
+              }
+            ),
+          );
+        }
       ),
     );
   }
@@ -82,11 +92,13 @@ class _PokemonListPageState extends State<PokemonListPage> {
   String getErrorString(ErrorState state) {
     switch(state.errorCode) {
       case ErrorState.networkError:
-        return "Can't load data through network :(";
+        return "Network error occurred :(";
       case ErrorState.dbError:
         return "Can't load data from cache :(";
       case ErrorState.unknownError:
         return "Some unknown error occurred. Sry :(";
+      case ErrorState.noInternetError:
+        return "No internet connection.";
     }
     return "Some unknown error occurred. Sry :(";
   }

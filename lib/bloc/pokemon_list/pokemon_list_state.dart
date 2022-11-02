@@ -12,8 +12,10 @@ class LoadingState extends PokemonListState {
 
 class LoadedState extends PokemonListState {
   final List<PokemonListItem> pokemonList;
+  final bool startOfList;
+  final bool endOfList;
 
-  const LoadedState(this.pokemonList);
+  const LoadedState({required this.pokemonList, required this.startOfList, required this.endOfList});
 
   @override
   List<Object?> get props => [pokemonList];
@@ -22,7 +24,8 @@ class LoadedState extends PokemonListState {
 class ErrorState extends PokemonListState {
   static const int unknownError = 1;
   static const int networkError = 2;
-  static const int dbError = 3;
+  static const int noInternetError = 3;
+  static const int dbError = 4;
 
   final int errorCode;
 

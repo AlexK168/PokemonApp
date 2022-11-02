@@ -6,23 +6,52 @@ import 'package:pokemon_app/services/api_services/pokemon_list_service.dart';
 
 class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
   final PokemonListService _pokemonListService;
+  int currentOffset = 0;
+  final int limit = 20;
+  int count = 0;
 
   PokemonListBloc(this._pokemonListService) : super(LoadingState()) {
     on<LoadFromApiEvent>((event, emit) async {
       emit(LoadingState());
       try {
-        final pokemonList = await _pokemonListService.getPokemonList();
-        emit(LoadedState(pokemonList));
+        final serviceResponse = await _pokemonListService.getPokemonListWithCount(
+          offset: currentOffset,
+          limit: limit
+        );
+        count = serviceResponse.count;
+        emit(LoadedState(
+          pokemonList: serviceResponse.pokemonList,
+          startOfList: currentOffset <= 0,
+          endOfList: currentOffset >= count - limit,
+        ));
       } on Failure catch(f) {
         if (f == Failure.unknownError) {
           emit(const ErrorState(ErrorState.unknownError));
         } else if (f == Failure.networkError) {
           emit(const ErrorState(ErrorState.networkError));
-        } else {
+        } else if (f == Failure.dbError){
           emit(const ErrorState(ErrorState.dbError));
+        } else {
+          emit(const ErrorState(ErrorState.noInternetError));
         }
       }
     });
+
+    on<LoadNextFromApiEvent>((event, emit) async {
+      if (currentOffset < count - limit) {
+        currentOffset += limit;
+        add(LoadFromApiEvent());
+      }
+    });
+
+    on<LoadPrevFromApiEvent>((event, emit) async {
+      if (currentOffset >= limit) {
+        currentOffset -= limit;
+        add(LoadFromApiEvent());
+      }
+    });
   }
+
+
 
 }

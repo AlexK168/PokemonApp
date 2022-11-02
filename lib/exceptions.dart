@@ -1,5 +1,6 @@
 enum Failure{
   networkError,
   dbError,
-  unknownError
+  unknownError,
+  noInternetError
 }

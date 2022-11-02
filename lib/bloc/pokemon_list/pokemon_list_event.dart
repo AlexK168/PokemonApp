@@ -9,6 +9,16 @@ class LoadFromApiEvent extends PokemonListEvent {
   List<Object?> get props => [];
 }
 
+class LoadNextFromApiEvent extends PokemonListEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+class LoadPrevFromApiEvent extends PokemonListEvent {
+  @override
+  List<Object?> get props => [];
+}
+
 class NoInternetEvent extends PokemonListEvent {
   @override
   List<Object?> get props => [];
