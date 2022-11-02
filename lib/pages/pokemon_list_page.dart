@@ -24,6 +24,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
         listener: (context, state) {
           if (state is ErrorState) {
             String errMsg = getErrorString(state);
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(errMsg))
             );
