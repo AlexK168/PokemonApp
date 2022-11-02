@@ -2,19 +2,19 @@ import 'package:bloc/bloc.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_event.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_state.dart';
 import 'package:pokemon_app/exceptions.dart';
-import 'package:pokemon_app/services/api_services/pokemon_list_service.dart';
+import 'package:pokemon_app/services/api_services/pokemon_api_service.dart';
 
 class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
-  final PokemonListService _pokemonListService;
+  final PokemonApiService _pokemonApiService;
   int currentOffset = 0;
   final int limit = 20;
   int count = 0;
 
-  PokemonListBloc(this._pokemonListService) : super(LoadingState()) {
+  PokemonListBloc(this._pokemonApiService) : super(LoadingState()) {
     on<LoadFromApiEvent>((event, emit) async {
       emit(LoadingState());
       try {
-        final serviceResponse = await _pokemonListService.getPokemonListWithCount(
+        final serviceResponse = await _pokemonApiService.getPokemonListWithCount(
           offset: currentOffset,
           limit: limit
         );

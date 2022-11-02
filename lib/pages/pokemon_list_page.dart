@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_bloc.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_event.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_state.dart';
-import 'package:pokemon_app/services/api_services/pokemon_list_service.dart';
+import 'package:pokemon_app/services/api_services/pokemon_api_service.dart';
 
 class PokemonListPage extends StatefulWidget {
   final String title = "Pokemons";
@@ -18,7 +18,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => PokemonListBloc(
-        RepositoryProvider.of<PokemonListService>(context)
+        RepositoryProvider.of<PokemonApiService>(context)
       )..add(LoadFromApiEvent()),
       child: BlocConsumer<PokemonListBloc, PokemonListState>(
         listener: (context, state) {
@@ -59,6 +59,9 @@ class _PokemonListPageState extends State<PokemonListPage> {
                               itemCount: state.pokemonList.length,
                               itemBuilder: ((context, index) => ListTile(
                                 title: Text(state.pokemonList[index].name),
+                                onTap: () {
+                                  // TODO: navigate to detail page
+                                },
                               )),
                               separatorBuilder: (context, index) => const Divider(),
                             )

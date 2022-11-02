@@ -1,1 +1,1 @@
-const String apiBaseurl = "https://pokeapi.co/api/v2/pokemon";
+const String apiBaseurl = "https://pokeapi.co/api/v2/pokemon/";

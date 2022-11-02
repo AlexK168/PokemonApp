@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pokemon_app/services/api_services/pokemon_list_service.dart';
+import 'package:pokemon_app/pages/pokemon_detail_page.dart';
+import 'package:pokemon_app/services/api_services/pokemon_api_service.dart';
 import 'pages/pokemon_list_page.dart';
 
 void main() {
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
       home: MultiRepositoryProvider(
         providers: [
           RepositoryProvider(
-            create: (context) => PokemonListService()
+            create: (context) => PokemonApiService()
           )
         ],
         child: const MyHomePage(title: 'Flutter Demo Home Page')
@@ -41,6 +42,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return const PokemonListPage();
+    return const PokemonDetailPage();
   }
 }
