@@ -20,7 +20,15 @@ class _PokemonListPageState extends State<PokemonListPage> {
       create: (context) => PokemonListBloc(
         RepositoryProvider.of<PokemonListService>(context)
       )..add(LoadFromApiEvent()),
-      child: BlocBuilder<PokemonListBloc, PokemonListState>(
+      child: BlocConsumer<PokemonListBloc, PokemonListState>(
+        listener: (context, state) {
+          if (state is ErrorState) {
+            String errMsg = getErrorString(state);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(errMsg))
+            );
+          }
+        },
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
