@@ -36,14 +36,28 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CircleAvatar(
-                            // TODO: consider network error loading image
-                            backgroundImage: NetworkImage(state.pokemonDetail.image),
-                            radius: 70,
-                          ),
+                          Builder(builder: (context) {
+                            if (state.pokemonDetail.image == null) {
+                              return const Icon(
+                                Icons.question_mark,
+                                size: 140,
+                              );
+                            } else {
+                              return CircleAvatar(
+                                backgroundImage: NetworkImage(state.pokemonDetail.image ?? ""),
+                                radius: 70,
+                                onBackgroundImageError: (_, __) {
+                                  ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text("Unable to load a picture. Pokemon must be invisible..."))
+                                  );
+                                },
+                              );
+                            }
+                          }),
                           const SizedBox(height: 8),
                           Text(
-                            state.pokemonDetail.name,
+                            state.pokemonDetail.name ?? "Unnamed",
                             style: const TextStyle(
                               fontSize: 18
                             ),
@@ -58,13 +72,13 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
-                                "Height: ${state.pokemonDetail.height}",
+                                "Height: ${state.pokemonDetail.height?.toString() ?? "unknown"}",
                                 style: const TextStyle(
                                   fontSize: 16
                                 ),
                               ),
                               Text(
-                                "Weight: ${state.pokemonDetail.weight}",
+                                "Weight: ${state.pokemonDetail.weight?.toString() ?? "unknown"}",
                                 style: const TextStyle(
                                   fontSize: 16
                                 ),
@@ -80,9 +94,9 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                           ),
                           Expanded(
                             child: ListView.builder(
-                              itemCount: state.pokemonDetail.types.length,
+                              itemCount: state.pokemonDetail.types?.length ?? 0,
                               itemBuilder: (context, index) => ListTile(
-                                title: Text(state.pokemonDetail.types[index]),
+                                title: Text(state.pokemonDetail.types?[index] ?? ""),
                               )
                             )
                           )
