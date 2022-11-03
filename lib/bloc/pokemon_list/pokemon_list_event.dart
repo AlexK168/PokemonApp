@@ -4,7 +4,7 @@ abstract class PokemonListEvent extends Equatable{
   const PokemonListEvent();
 }
 
-class LoadFromApiEvent extends PokemonListEvent {
+class LoadListFromApiEvent extends PokemonListEvent {
   @override
   List<Object?> get props => [];
 }
@@ -19,7 +19,7 @@ class LoadPrevFromApiEvent extends PokemonListEvent {
   List<Object?> get props => [];
 }
 
-class LoadFromDbEvent extends PokemonListEvent {
+class LoadListFromDbEvent extends PokemonListEvent {
   @override
   List<Object?> get props => [];
 }

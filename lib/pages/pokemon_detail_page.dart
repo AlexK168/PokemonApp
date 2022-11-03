@@ -7,7 +7,8 @@ import '../bloc/pokemon_detail/pokemon_detail_bloc.dart';
 import '../services/api_services/pokemon_api_service.dart';
 
 class PokemonDetailPage extends StatefulWidget {
-  const PokemonDetailPage({Key? key}) : super(key: key);
+  final String pokemonDetailUrl;
+  const PokemonDetailPage({Key? key, required this.pokemonDetailUrl}) : super(key: key);
 
   @override
   State<PokemonDetailPage> createState() => _PokemonDetailPageState();
@@ -17,16 +18,15 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      // TODO: get actual pokemon index and pass to event
       create: (context) => PokemonDetailBloc(
         RepositoryProvider.of<PokemonApiService>(context)
-      )..add(const LoadDetailFromApiEvent(1)),
+      )..add(LoadDetailFromApiEvent(widget.pokemonDetailUrl)),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Pokemon detail'),
         ),
         body: BlocBuilder<PokemonDetailBloc, PokemonDetailState>(
-          builder: (BuildContext context, state) {
+          builder: (context, state) {
             if (state is LoadedState) {
               return Container(
                 padding: const EdgeInsets.all(8),
@@ -100,7 +100,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
             }
             else if (state is ErrorState) {
               return Center(
-                child: Text('Some error'),
+                child: Text(getErrorString(state)),
               );
             }
             return Container();
@@ -108,5 +108,20 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
         ),
       ),
     );
+  }
+
+  // TODO: ELIMINATE CODE DUPLICATION (Same function in pokemon list page)
+  String getErrorString(ErrorState state) {
+    switch(state.errorCode) {
+      case ErrorState.networkError:
+        return "Network error occurred :(";
+      case ErrorState.dbError:
+        return "Can't load data from cache :(";
+      case ErrorState.unknownError:
+        return "Some unknown error occurred. Sry :(";
+      case ErrorState.noInternetError:
+        return "No internet connection.";
+    }
+    return "Some unknown error occurred. Sry :(";
   }
 }

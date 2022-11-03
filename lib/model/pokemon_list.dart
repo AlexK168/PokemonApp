@@ -6,5 +6,16 @@ class PokemonList {
   // contains the overall count of pokemons provided by API
   final int count;
 
-  PokemonList(this.pokemonList, this.count);
+  PokemonList({required this.pokemonList, required this.count});
+
+  factory PokemonList.fromJson (Map<String, dynamic> json) {
+    List<dynamic> parsedList = json['results'];
+    List<PokemonListItem> pokemonList = parsedList.map(
+      (i) => PokemonListItem.fromJson(i)
+    ).toList();
+    return PokemonList(
+      pokemonList: pokemonList,
+      count: json['count']
+    );
+  }
 }

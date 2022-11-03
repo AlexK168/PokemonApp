@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_bloc.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_event.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_state.dart';
+import 'package:pokemon_app/pages/pokemon_detail_page.dart';
 import 'package:pokemon_app/services/api_services/pokemon_api_service.dart';
 
 class PokemonListPage extends StatefulWidget {
@@ -19,7 +20,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
     return BlocProvider(
       create: (context) => PokemonListBloc(
         RepositoryProvider.of<PokemonApiService>(context)
-      )..add(LoadFromApiEvent()),
+      )..add(LoadListFromApiEvent()),
       child: BlocConsumer<PokemonListBloc, PokemonListState>(
         listener: (context, state) {
           if (state is ErrorState) {
@@ -37,7 +38,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
               actions: [
                 IconButton(
                   onPressed: () async {
-                    BlocProvider.of<PokemonListBloc>(context).add(LoadFromApiEvent());
+                    BlocProvider.of<PokemonListBloc>(context).add(LoadListFromApiEvent());
                   },
                   icon: const Icon(Icons.refresh))
               ],
@@ -55,16 +56,20 @@ class _PokemonListPageState extends State<PokemonListPage> {
                     child: Column(
                       children: [
                         Expanded(
-                            child: ListView.separated(
-                              itemCount: state.pokemonList.length,
-                              itemBuilder: ((context, index) => ListTile(
-                                title: Text(state.pokemonList[index].name),
-                                onTap: () {
-                                  // TODO: navigate to detail page
-                                },
-                              )),
-                              separatorBuilder: (context, index) => const Divider(),
-                            )
+                          child: ListView.separated(
+                            itemCount: state.pokemonList.length,
+                            itemBuilder: ((context, index) => ListTile(
+                              title: Text(state.pokemonList[index].name),
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (context) => PokemonDetailPage(
+                                    pokemonDetailUrl: state.pokemonList[index].url,
+                                  )),
+                                );
+                              },
+                            )),
+                            separatorBuilder: (context, index) => const Divider(),
+                          )
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,

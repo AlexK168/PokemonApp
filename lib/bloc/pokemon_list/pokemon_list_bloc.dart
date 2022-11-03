@@ -11,7 +11,7 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
   int count = 0;
 
   PokemonListBloc(this._pokemonApiService) : super(LoadingState()) {
-    on<LoadFromApiEvent>((event, emit) async {
+    on<LoadListFromApiEvent>((event, emit) async {
       emit(LoadingState());
       try {
         final serviceResponse = await _pokemonApiService.getPokemonListWithCount(
@@ -40,14 +40,14 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
     on<LoadNextFromApiEvent>((event, emit) async {
       if (currentOffset < count - limit) {
         currentOffset += limit;
-        add(LoadFromApiEvent());
+        add(LoadListFromApiEvent());
       }
     });
 
     on<LoadPrevFromApiEvent>((event, emit) async {
       if (currentOffset >= limit) {
         currentOffset -= limit;
-        add(LoadFromApiEvent());
+        add(LoadListFromApiEvent());
       }
     });
   }

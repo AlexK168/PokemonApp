@@ -4,34 +4,21 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:pokemon_app/exceptions.dart';
 import 'package:pokemon_app/model/pokemon_detail.dart';
-import 'package:pokemon_app/model/pokemon_list_item.dart';
-import 'package:pokemon_app/services/api_services/constants.dart';
 
 import '../../model/pokemon_list.dart';
 
 class PokemonApiService {
-  // TODO: eliminate code duplication when handling errors
-  Future<PokemonList> getPokemonListWithCount({int offset=0, int limit=20}) async {
-    var queryParams = {
-      'offset': offset.toString(),
-      'limit': limit.toString()
-    };
+  static const String _apiBaseurl = "https://pokeapi.co/api/v2/pokemon/";
+
+  Future<R> _tryRequest<R>(Future<R> Function() body) async {
     try {
-      final response = await get(
-        Uri.parse(apiBaseurl).replace(queryParameters: queryParams)
-      ).timeout(const Duration(seconds: 5));
-      int parsedCount = jsonDecode(response.body)['count'];
-      List<dynamic> parsedList = jsonDecode(response.body)['results'];
-      List<PokemonListItem> pokemonList = parsedList.map(
-        (i) => PokemonListItem.fromJson(i)
-      ).toList();
-      return PokemonList(pokemonList, parsedCount);
+      return await body();
     } on SocketException {
       throw Failure.noInternetError;
     } on HttpException {
       throw Failure.networkError;
     } on FormatException {
-      throw Failure.networkError;
+      throw Failure.unknownError;
     } on TimeoutException {
       throw Failure.networkError;
     }
@@ -40,30 +27,33 @@ class PokemonApiService {
     }
   }
 
-  Future<PokemonDetail> getPokemon(int index) async {
-    try {
+  Future<PokemonList> getPokemonListWithCount({int offset=0, int limit=20}) async {
+    var queryParams = {
+      'offset': offset.toString(),
+      'limit': limit.toString()
+    };
+    return _tryRequest(() async {
       final response = await get(
-          Uri.parse(apiBaseurl + index.toString())
+          Uri.parse(_apiBaseurl).replace(queryParameters: queryParams)
       ).timeout(const Duration(seconds: 5));
-      // TODO: parse JSON and create pokemon object
-      return PokemonDetail(
-        name: 'Pokemon1',
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png',
-        types: ['grass', 'dirt'],
-        weight: 33,
-        height: 33,
-      );
-    } on SocketException {
-      throw Failure.noInternetError;
-    } on HttpException {
-      throw Failure.networkError;
-    } on FormatException {
-      throw Failure.networkError;
-    } on TimeoutException {
-      throw Failure.networkError;
-    }
-    catch(e) {
-      throw Failure.unknownError;
-    }
+      if (response.statusCode != 200) {
+        throw const HttpException("Status code is not OK");
+      }
+      var json = jsonDecode(response.body);
+      return PokemonList.fromJson(json);
+    });
+  }
+
+  Future<PokemonDetail> getPokemon(String detailUrl) async {
+    return _tryRequest(() async {
+      final response = await get(
+          Uri.parse(detailUrl)
+      ).timeout(const Duration(seconds: 5));
+      if (response.statusCode != 200) {
+        throw const HttpException("Status code is not OK");
+      }
+      var json = jsonDecode(response.body);
+      return PokemonDetail.fromJson(json);
+    });
   }
 }

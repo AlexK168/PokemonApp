@@ -12,7 +12,7 @@ class PokemonDetailBloc extends Bloc<PokemonDetailEvent, PokemonDetailState> {
     on<LoadDetailFromApiEvent>((event, emit) async {
       emit(LoadingState());
       try {
-        PokemonDetail pokemon = await _pokemonApiService.getPokemon(event.pokemonIndex);
+        PokemonDetail pokemon = await _pokemonApiService.getPokemon(event.pokemonDetailUrl);
         emit(LoadedState(pokemon));
       } on Failure catch(f) {
         if (f == Failure.unknownError) {

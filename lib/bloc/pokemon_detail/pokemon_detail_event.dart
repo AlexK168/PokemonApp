@@ -5,14 +5,14 @@ abstract class PokemonDetailEvent extends Equatable{
 }
 
 class LoadDetailFromApiEvent extends PokemonDetailEvent {
-  final int pokemonIndex;
+  final String pokemonDetailUrl;
   @override
-  List<Object?> get props => [pokemonIndex];
+  List<Object?> get props => [pokemonDetailUrl];
 
-  const LoadDetailFromApiEvent(this.pokemonIndex);
+  const LoadDetailFromApiEvent(this.pokemonDetailUrl);
 }
 
-class LoadFromDbEvent extends PokemonDetailEvent {
+class LoadDetailFromDbEvent extends PokemonDetailEvent {
   @override
   List<Object?> get props => [];
 }
