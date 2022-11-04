@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_event.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_state.dart';
+import 'package:pokemon_app/utils/show_snackbar.dart';
 
 import '../bloc/pokemon_detail/pokemon_detail_bloc.dart';
 import '../services/api_services/pokemon_api_service.dart';
@@ -47,9 +48,8 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                                 backgroundImage: NetworkImage(state.pokemonDetail.image ?? ""),
                                 radius: 70,
                                 onBackgroundImageError: (_, __) {
-                                  ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text("Unable to load a picture. Pokemon must be invisible..."))
+                                  showSnackBar(
+                                    context, "Unable to load a picture. Pokemon must be invisible..."
                                   );
                                 },
                               );

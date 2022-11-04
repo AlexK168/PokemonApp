@@ -5,6 +5,7 @@ import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_event.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_state.dart';
 import 'package:pokemon_app/pages/pokemon_detail_page.dart';
 import 'package:pokemon_app/services/api_services/pokemon_api_service.dart';
+import 'package:pokemon_app/utils/show_snackbar.dart';
 
 class PokemonListPage extends StatefulWidget {
   final String title = "Pokemons";
@@ -25,10 +26,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
         listener: (context, state) {
           if (state is ErrorState) {
             String errMsg = getErrorString(state);
-            ScaffoldMessenger.of(context).removeCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(errMsg))
-            );
+            showSnackBar(context, errMsg);
           }
         },
         builder: (context, state) {
