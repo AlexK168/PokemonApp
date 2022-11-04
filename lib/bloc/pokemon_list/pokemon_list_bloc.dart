@@ -14,6 +14,7 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
     on<LoadListFromApiEvent>((event, emit) async {
       emit(LoadingState());
       try {
+        // TODO: inverse dependency. BLOC class should NOT depend on low-level service
         final serviceResponse = await _pokemonApiService.getPokemonListWithCount(
           offset: currentOffset,
           limit: limit

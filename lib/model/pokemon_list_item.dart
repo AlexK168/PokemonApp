@@ -6,9 +6,4 @@ class PokemonListItem {
 
   String name;
   String url;
-
-  factory PokemonListItem.fromJson(Map<String, dynamic> json) => PokemonListItem(
-    name: json["name"],
-    url: json["url"],
-  );
 }

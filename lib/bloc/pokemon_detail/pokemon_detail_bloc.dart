@@ -12,6 +12,7 @@ class PokemonDetailBloc extends Bloc<PokemonDetailEvent, PokemonDetailState> {
     on<LoadDetailFromApiEvent>((event, emit) async {
       emit(LoadingState());
       try {
+        // TODO: inverse dependency. BLOC class should NOT depend on low-level service
         PokemonDetail pokemon = await _pokemonApiService.getPokemon(event.pokemonDetailUrl);
         emit(LoadedState(pokemon));
       } on Failure catch(f) {

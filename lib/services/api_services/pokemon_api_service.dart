@@ -6,6 +6,7 @@ import 'package:pokemon_app/exceptions.dart';
 import 'package:pokemon_app/model/pokemon_detail.dart';
 
 import '../../model/pokemon_list.dart';
+import '../../model/pokemon_list_item.dart';
 
 class PokemonApiService {
   static const String _apiBaseurl = "https://pokeapi.co/api/v2/pokemon/";
@@ -27,6 +28,34 @@ class PokemonApiService {
     }
   }
 
+  PokemonDetail _getPokemonDetailFromJson(Map<String, dynamic> json) {
+    List<dynamic> parsedTypes = json["types"];
+    List<String> types = parsedTypes.map((i) => i["type"]["name"] as String).toList();
+    return PokemonDetail(
+      name: json["name"],
+      image: json["sprites"]["front_default"],
+      weight: json["weight"],
+      height: json["height"],
+      types: types,
+    );
+  }
+
+  PokemonListItem _getPokemonListItemFromJson(Map<String, dynamic> json) => PokemonListItem(
+      name: json["name"],
+      url: json["url"],
+    );
+
+  PokemonList _getPokemonListFromJson(Map<String, dynamic> json) {
+    List<dynamic> parsedList = json['results'];
+    List<PokemonListItem> pokemonList = parsedList.map(
+            (i) => _getPokemonListItemFromJson(i)
+    ).toList();
+    return PokemonList(
+        pokemonList: pokemonList,
+        count: json['count']
+    );
+  }
+
   Future<PokemonList> getPokemonListWithCount({int offset=0, int limit=20}) async {
     var queryParams = {
       'offset': offset.toString(),
@@ -40,7 +69,7 @@ class PokemonApiService {
         throw const HttpException("Status code is not OK");
       }
       var json = jsonDecode(response.body);
-      return PokemonList.fromJson(json);
+      return _getPokemonListFromJson(json);
     });
   }
 
@@ -53,7 +82,7 @@ class PokemonApiService {
         throw const HttpException("Status code is not OK");
       }
       var json = jsonDecode(response.body);
-      return PokemonDetail.fromJson(json);
+      return _getPokemonDetailFromJson(json);
     });
   }
 }
