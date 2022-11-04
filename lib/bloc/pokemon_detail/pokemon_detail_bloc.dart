@@ -2,17 +2,16 @@ import 'package:bloc/bloc.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_event.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_state.dart';
 import 'package:pokemon_app/exceptions.dart';
-import 'package:pokemon_app/model/pokemon_detail.dart';
-import 'package:pokemon_app/services/api_services/pokemon_api_service.dart';
+import 'package:pokemon_app/entities/pokemon_detail.dart';
+import 'package:pokemon_app/services/pokemon_service.dart';
 
 class PokemonDetailBloc extends Bloc<PokemonDetailEvent, PokemonDetailState> {
-  final PokemonApiService _pokemonApiService;
+  final PokemonService _pokemonApiService;
 
   PokemonDetailBloc(this._pokemonApiService) : super(LoadingState()) {
     on<LoadDetailFromApiEvent>((event, emit) async {
       emit(LoadingState());
       try {
-        // TODO: inverse dependency. BLOC class should NOT depend on low-level service
         PokemonDetail pokemon = await _pokemonApiService.getPokemon(event.pokemonDetailUrl);
         emit(LoadedState(pokemon));
       } on Failure catch(f) {

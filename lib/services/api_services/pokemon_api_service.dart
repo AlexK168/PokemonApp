@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart';
 import 'package:pokemon_app/exceptions.dart';
-import 'package:pokemon_app/model/pokemon_detail.dart';
+import 'package:pokemon_app/entities/pokemon_detail.dart';
+import 'package:pokemon_app/services/pokemon_service.dart';
 
-import '../../model/pokemon_list.dart';
-import '../../model/pokemon_list_item.dart';
+import '../../DTO/pokemon_list.dart';
+import '../../entities/pokemon_list_item.dart';
 
-class PokemonApiService {
+class PokemonApiService extends PokemonService{
   static const String _apiBaseurl = "https://pokeapi.co/api/v2/pokemon/";
 
   Future<R> _tryRequest<R>(Future<R> Function() body) async {

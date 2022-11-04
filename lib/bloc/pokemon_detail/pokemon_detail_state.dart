@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:pokemon_app/model/pokemon_detail.dart';
+import 'package:pokemon_app/entities/pokemon_detail.dart';
 
 abstract class PokemonDetailState extends Equatable {
   const PokemonDetailState();
