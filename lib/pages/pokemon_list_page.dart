@@ -4,8 +4,9 @@ import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_bloc.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_event.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_state.dart';
 import 'package:pokemon_app/pages/pokemon_detail_page.dart';
-import 'package:pokemon_app/services/api_services/pokemon_api_service.dart';
 import 'package:pokemon_app/utils/show_snackbar.dart';
+
+import '../repository/repository_impl.dart';
 
 class PokemonListPage extends StatefulWidget {
   final String title = "Pokemons";
@@ -20,8 +21,8 @@ class _PokemonListPageState extends State<PokemonListPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => PokemonListBloc(
-        RepositoryProvider.of<PokemonApiService>(context)
-      )..add(LoadListFromApiEvent()),
+        RepositoryProvider.of<PokemonRepositoryImpl>(context)
+      )..add(LoadListEvent()),
       child: BlocConsumer<PokemonListBloc, PokemonListState>(
         listener: (context, state) {
           if (state is ErrorState) {
@@ -36,7 +37,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
               actions: [
                 IconButton(
                   onPressed: () async {
-                    BlocProvider.of<PokemonListBloc>(context).add(LoadListFromApiEvent());
+                    BlocProvider.of<PokemonListBloc>(context).add(LoadListEvent());
                   },
                   icon: const Icon(Icons.refresh))
               ],
@@ -74,13 +75,13 @@ class _PokemonListPageState extends State<PokemonListPage> {
                           children: [
                             IconButton(
                               onPressed: state.startOfList ? null : () {
-                                BlocProvider.of<PokemonListBloc>(context).add(LoadPrevFromApiEvent());
+                                BlocProvider.of<PokemonListBloc>(context).add(LoadPrevEvent());
                               },
                               icon: const Icon(Icons.arrow_back),
                             ),
                             IconButton(
                               onPressed: state.endOfList ? null : () {
-                                BlocProvider.of<PokemonListBloc>(context).add(LoadNextFromApiEvent());
+                                BlocProvider.of<PokemonListBloc>(context).add(LoadNextEvent());
                               },
                               icon: const Icon(Icons.arrow_forward),
                             )

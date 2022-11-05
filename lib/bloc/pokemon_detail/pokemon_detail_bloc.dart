@@ -2,28 +2,37 @@ import 'package:bloc/bloc.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_event.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_state.dart';
 import 'package:pokemon_app/exceptions.dart';
-import 'package:pokemon_app/entities/pokemon_detail.dart';
-import 'package:pokemon_app/services/pokemon_service.dart';
+import 'package:pokemon_app/repository/repository.dart';
+
+import '../../entities/pokemon_detail.dart';
+
 
 class PokemonDetailBloc extends Bloc<PokemonDetailEvent, PokemonDetailState> {
-  final PokemonService _pokemonApiService;
+  final PokemonRepository _pokemonRepository;
 
-  PokemonDetailBloc(this._pokemonApiService) : super(LoadingState()) {
-    on<LoadDetailFromApiEvent>((event, emit) async {
+  PokemonDetailBloc(this._pokemonRepository) : super(LoadingState()) {
+    on<LoadDetailEvent>((event, emit) async {
       emit(LoadingState());
-      try {
-        PokemonDetail pokemon = await _pokemonApiService.getPokemon(event.pokemonDetailUrl);
-        emit(LoadedState(pokemon));
-      } on Failure catch(f) {
-        if (f == Failure.unknownError) {
-          emit(const ErrorState(ErrorState.unknownError));
+      final response = await _pokemonRepository.getPokemon(event.pokemonDetailUrl);
+      List<Failure> errors = response.errors;
+
+      for (Failure f in errors) {
+        if (f == Failure.noInternetError) {
+          emit(const ErrorState(ErrorState.noInternetError));
         } else if (f == Failure.networkError) {
           emit(const ErrorState(ErrorState.networkError));
         } else if (f == Failure.dbError){
           emit(const ErrorState(ErrorState.dbError));
         } else {
-          emit(const ErrorState(ErrorState.noInternetError));
+          emit(const ErrorState(ErrorState.unknownError));
         }
+      }
+
+      PokemonDetail? pokemon = response.data;
+      if (pokemon != null) {
+        emit(LoadedState(
+          pokemon
+        ));
       }
     });
   }

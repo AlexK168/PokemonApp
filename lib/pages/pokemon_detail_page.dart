@@ -5,7 +5,7 @@ import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_state.dart';
 import 'package:pokemon_app/utils/show_snackbar.dart';
 
 import '../bloc/pokemon_detail/pokemon_detail_bloc.dart';
-import '../services/api_services/pokemon_api_service.dart';
+import '../repository/repository_impl.dart';
 
 class PokemonDetailPage extends StatefulWidget {
   final String pokemonDetailUrl;
@@ -20,13 +20,19 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => PokemonDetailBloc(
-        RepositoryProvider.of<PokemonApiService>(context)
-      )..add(LoadDetailFromApiEvent(widget.pokemonDetailUrl)),
+        RepositoryProvider.of<PokemonRepositoryImpl>(context)
+      )..add(LoadDetailEvent(widget.pokemonDetailUrl)),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Pokemon detail'),
         ),
-        body: BlocBuilder<PokemonDetailBloc, PokemonDetailState>(
+        body: BlocConsumer<PokemonDetailBloc, PokemonDetailState>(
+          listener: (context, state) {
+            if (state is ErrorState) {
+              String errMsg = getErrorString(state);
+              showSnackBar(context, errMsg);
+            }
+          },
           builder: (context, state) {
             if (state is LoadedState) {
               return Container(
