@@ -16,6 +16,7 @@ class PokemonDetailPage extends StatefulWidget {
 }
 
 class _PokemonDetailPageState extends State<PokemonDetailPage> {
+  bool _imageError = false;
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -28,6 +29,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
         ),
         body: BlocConsumer<PokemonDetailBloc, PokemonDetailState>(
           listener: (context, state) {
+            // print(state);
             if (state is ErrorState) {
               String errMsg = getErrorString(state);
               showSnackBar(context, errMsg);
@@ -44,7 +46,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Builder(builder: (context) {
-                            if (state.pokemonDetail.image == null) {
+                            if (state.pokemonDetail.image == null || _imageError) {
                               return const Icon(
                                 Icons.question_mark,
                                 size: 140,
@@ -57,6 +59,9 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                                   showSnackBar(
                                     context, "Unable to load a picture. Pokemon must be invisible..."
                                   );
+                                  setState(() {
+                                    _imageError = true;
+                                  });
                                 },
                               );
                             }

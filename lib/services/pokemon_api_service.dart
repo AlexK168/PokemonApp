@@ -5,8 +5,8 @@ import 'package:http/http.dart';
 import 'package:pokemon_app/exceptions.dart';
 import 'package:pokemon_app/entities/pokemon_detail.dart';
 
-import '../../DTO/pokemon_list.dart';
-import '../../DTO/pokemon_list_item.dart';
+import '../DTO/pokemon_list.dart';
+import '../DTO/pokemon_list_item.dart';
 
 class PokemonApiService{
   static const String _apiBaseurl = "https://pokeapi.co/api/v2/pokemon/";
