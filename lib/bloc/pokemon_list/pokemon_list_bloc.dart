@@ -37,7 +37,7 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
 
       if (pokemonList != null) {
         count = pokemonList.count;
-        while(currentOffset >= count && currentOffset > 0) {
+        while(currentOffset >= count && currentOffset > limit) {
             currentOffset -= limit;
         }
         emit(LoadedState(
