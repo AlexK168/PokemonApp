@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_event.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_state.dart';
 import 'package:pokemon_app/utils/show_snackbar.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../bloc/pokemon_detail/pokemon_detail_bloc.dart';
 import '../repository/repository_impl.dart';
 
@@ -25,11 +25,10 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
       )..add(LoadDetailEvent(widget.pokemonDetailUrl)),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Pokemon detail'),
+          title: Text(AppLocalizations.of(context)!.pokemonDetailTitle),
         ),
         body: BlocConsumer<PokemonDetailBloc, PokemonDetailState>(
           listener: (context, state) {
-            // print(state);
             if (state is ErrorState) {
               String errMsg = getErrorString(state);
               showSnackBar(context, errMsg);
@@ -53,11 +52,13 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                               );
                             } else {
                               return CircleAvatar(
-                                backgroundImage: NetworkImage(state.pokemonDetail.image ?? ""),
+                                backgroundImage: NetworkImage(
+                                  state.pokemonDetail.image ?? AppLocalizations.of(context)!.blank
+                                ),
                                 radius: 70,
                                 onBackgroundImageError: (_, __) {
                                   showSnackBar(
-                                    context, "Unable to load a picture. Pokemon must be invisible..."
+                                    context, AppLocalizations.of(context)!.pictureLoadError
                                   );
                                   setState(() {
                                     _imageError = true;
@@ -68,7 +69,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                           }),
                           const SizedBox(height: 8),
                           Text(
-                            state.pokemonDetail.name ?? "Unnamed",
+                            state.pokemonDetail.name ?? AppLocalizations.of(context)!.unknown,
                             style: const TextStyle(
                               fontSize: 18
                             ),
@@ -83,13 +84,15 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
-                                "Height: ${state.pokemonDetail.height?.toString() ?? "unknown"}",
+                              "${AppLocalizations.of(context)!.heightWithColon}"
+                              "${state.pokemonDetail.height?.toString() ?? AppLocalizations.of(context)!.unknown}",
                                 style: const TextStyle(
                                   fontSize: 16
                                 ),
                               ),
                               Text(
-                                "Weight: ${state.pokemonDetail.weight?.toString() ?? "unknown"}",
+                                "${AppLocalizations.of(context)!.weightWithColon}"
+                                "${state.pokemonDetail.weight?.toString() ?? AppLocalizations.of(context)!.unknown}",
                                 style: const TextStyle(
                                   fontSize: 16
                                 ),
@@ -97,9 +100,9 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                             ],
                           ),
                           const SizedBox(height: 8,),
-                          const Text(
-                            'Pokemon types:',
-                            style: TextStyle(
+                          Text(
+                            AppLocalizations.of(context)!.pokemonTypesWithColon,
+                            style: const TextStyle(
                                 fontSize: 16
                             ),
                           ),
@@ -107,7 +110,9 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                             child: ListView.builder(
                               itemCount: state.pokemonDetail.types?.length ?? 0,
                               itemBuilder: (context, index) => ListTile(
-                                title: Text(state.pokemonDetail.types?[index] ?? ""),
+                                title: Text(
+                                  state.pokemonDetail.types?[index] ?? AppLocalizations.of(context)!.blank
+                                ),
                               )
                             )
                           )
@@ -139,14 +144,14 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
   String getErrorString(ErrorState state) {
     switch(state.errorCode) {
       case ErrorState.networkError:
-        return "Network error occurred :(";
+        return AppLocalizations.of(context)!.networkErrorMsg;
       case ErrorState.dbError:
-        return "Can't load data from cache :(";
+        return AppLocalizations.of(context)!.cacheErrorMsg;
       case ErrorState.unknownError:
-        return "Some unknown error occurred. Sry :(";
+        return AppLocalizations.of(context)!.networkErrorMsg;
       case ErrorState.noInternetError:
-        return "No internet connection.";
+        return AppLocalizations.of(context)!.noInternetErrorMsg;
     }
-    return "Some unknown error occurred. Sry :(";
+    return AppLocalizations.of(context)!.networkErrorMsg;
   }
 }

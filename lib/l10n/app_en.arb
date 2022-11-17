@@ -1,0 +1,15 @@
+{
+  "pokemonDetailTitle": "Pokemon detail",
+  "pokemonListTitle": "Pokemons",
+  "pictureLoadError": "Unable to load a picture. Pokemon must be invisible...",
+  "unnamed": "Unnamed",
+  "heightWithColon": "Height: ",
+  "unknown": "unknown",
+  "weightWithColon": "Weight: ",
+  "pokemonTypesWithColon": "Pokemon types:",
+  "blank": "",
+  "networkErrorMsg": "Network error occurred :(",
+  "cacheErrorMsg": "Can't load data from cache :(",
+  "unknownErrorMsg": "Some unknown error occurred. Sry :(",
+  "noInternetErrorMsg": "No internet connection."
+}

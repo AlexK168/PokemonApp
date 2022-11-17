@@ -5,11 +5,10 @@ import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_event.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_state.dart';
 import 'package:pokemon_app/pages/pokemon_detail_page.dart';
 import 'package:pokemon_app/utils/show_snackbar.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../repository/repository_impl.dart';
 
 class PokemonListPage extends StatefulWidget {
-  final String title = "Pokemons";
   const PokemonListPage({Key? key}) : super(key: key);
 
   @override
@@ -33,7 +32,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(widget.title),
+              title: Text(AppLocalizations.of(context)!.pokemonListTitle),
               actions: [
                 IconButton(
                   onPressed: () async {
@@ -108,14 +107,14 @@ class _PokemonListPageState extends State<PokemonListPage> {
   String getErrorString(ErrorState state) {
     switch(state.errorCode) {
       case ErrorState.networkError:
-        return "Network error occurred :(";
+        return AppLocalizations.of(context)!.networkErrorMsg;
       case ErrorState.dbError:
-        return "Can't load data from cache :(";
+        return AppLocalizations.of(context)!.cacheErrorMsg;
       case ErrorState.unknownError:
-        return "Some unknown error occurred. Sry :(";
+        return AppLocalizations.of(context)!.networkErrorMsg;
       case ErrorState.noInternetError:
-        return "No internet connection.";
+        return AppLocalizations.of(context)!.noInternetErrorMsg;
     }
-    return "Some unknown error occurred. Sry :(";
+    return AppLocalizations.of(context)!.networkErrorMsg;
   }
 }

@@ -7,6 +7,7 @@ import 'package:pokemon_app/services/pokemon_api_service.dart';
 import 'package:pokemon_app/services/pokemon_db_service.dart';
 import 'hive_models/hive_pokemon.dart';
 import 'pages/pokemon_list_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -31,6 +32,8 @@ class MyApp extends StatelessWidget {
         PokemonDbService(RepositoryProvider.of<Box>(context))
       ),
       child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.yellow,
