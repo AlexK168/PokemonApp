@@ -1,19 +1,21 @@
 import 'package:either_dart/either.dart';
+import 'package:pokemon_app/DTO/pokemon_list_with_boundaries.dart';
 import 'package:pokemon_app/repository/repository.dart';
 import 'package:pokemon_app/services/pokemon_db_service.dart';
 
 import '../DTO/pokemon_list.dart';
 import '../entities/pokemon_detail.dart';
 import '../exceptions.dart';
+import '../services/pagination_service.dart';
 import '../services/pokemon_api_service.dart';
 
-// TODO : implement Database actions
 class PokemonRepositoryImpl extends PokemonRepository {
 
   final PokemonApiService _apiService;
   final PokemonDbService _dbService;
+  final PaginationService _paginationService;
 
-  PokemonRepositoryImpl(this._apiService, this._dbService);
+  PokemonRepositoryImpl(this._apiService, this._dbService, this._paginationService);
 
   Future<Either<Failure, T>> _tryServiceRequest<T>(Future<T> Function() body) async {
     try {
@@ -83,14 +85,32 @@ class PokemonRepositoryImpl extends PokemonRepository {
     }
   }
 
+  void _scrollPage(bool toPrevPage, bool toNextPage) {
+    if (toPrevPage) {
+      _paginationService.toPrevPage();
+    } else if (toNextPage) {
+      _paginationService.toNextPage();
+    }
+  }
+
   @override
-  Future<PokemonRepositoryResponse<PokemonList>> getPokemonListWithCount({int offset=0, int limit=20}) async {
+  Future<PokemonRepositoryResponse<PokemonListWithBoundaries>> getPokemonListWithBoundaries({
+    required bool toPrevPage,
+    required bool toNextPage
+  }) async {
+    _scrollPage(toPrevPage, toNextPage);
     final response = await _fetchRepositoryData<PokemonList>(
       apiFetchServiceRequest: () {
-        return _apiService.getPokemonListWithCount(offset: offset, limit: limit);
+        return _apiService.getPokemonListWithCount(
+          offset: _paginationService.currentOffset,
+          limit: _paginationService.limit
+        );
       },
       dbFetchRequest: () {
-        return _dbService.getPokemonListWithCount(offset: offset, limit: limit);
+        return _dbService.getPokemonListWithCount(
+          offset: _paginationService.currentOffset,
+          limit: _paginationService.limit
+        );
       }
     );
     // get errors from response - if there are no errors - can save to db
@@ -98,8 +118,17 @@ class PokemonRepositoryImpl extends PokemonRepository {
       PokemonList listToSave = response.data ?? PokemonList(pokemonList: [], count: 0);
       _saveDeepListToDb(listToSave);
     }
-    return response;
+    if (response.data != null) {
+      _paginationService.updateCount(response.data!.count);
+    }
+    return PokemonRepositoryResponse<PokemonListWithBoundaries>(
+      response.data == null ? null:
+      PokemonListWithBoundaries(
+        pokemonList: response.data!.pokemonList,
+        endOfList: _paginationService.endOfList(),
+        startOfList: _paginationService.startOfList(),
+      ),
+      response.errors
+    );
   }
-
-
 }

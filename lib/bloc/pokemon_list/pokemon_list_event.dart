@@ -5,8 +5,12 @@ abstract class PokemonListEvent extends Equatable{
 }
 
 class LoadListEvent extends PokemonListEvent {
+  final bool toNext;
+  final bool toPrev;
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [toNext, toPrev];
+
+  const LoadListEvent({this.toNext = false, this.toPrev = false});
 }
 
 class LoadNextEvent extends PokemonListEvent {

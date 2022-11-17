@@ -1,10 +1,13 @@
-import '../DTO/pokemon_list.dart';
+import 'package:pokemon_app/DTO/pokemon_list_with_boundaries.dart';
 import '../entities/pokemon_detail.dart';
 import '../exceptions.dart';
 
 abstract class PokemonRepository{
   Future<PokemonRepositoryResponse<PokemonDetail>> getPokemon(String url);
-  Future<PokemonRepositoryResponse<PokemonList>> getPokemonListWithCount({int offset, int limit});
+  Future<PokemonRepositoryResponse<PokemonListWithBoundaries>> getPokemonListWithBoundaries({
+    required bool toPrevPage,
+    required bool toNextPage,
+  });
 }
 
 class PokemonRepositoryResponse<T> {
