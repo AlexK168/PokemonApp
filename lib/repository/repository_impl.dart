@@ -1,4 +1,5 @@
 import 'package:either_dart/either.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pokemon_app/DTO/pokemon_list_with_boundaries.dart';
 import 'package:pokemon_app/repository/repository.dart';
 import 'package:pokemon_app/services/pokemon_db_service.dart';
@@ -11,11 +12,15 @@ import '../services/pokemon_api_service.dart';
 
 class PokemonRepositoryImpl extends PokemonRepository {
 
-  final PokemonApiService _apiService;
-  final PokemonDbService _dbService;
-  final PaginationService _paginationService;
+  late PokemonApiService _apiService;
+  late PokemonDbService _dbService;
+  late PaginationService _paginationService;
 
-  PokemonRepositoryImpl(this._apiService, this._dbService, this._paginationService);
+  PokemonRepositoryImpl() {
+    _apiService = GetIt.instance<PokemonApiService>();
+    _dbService = GetIt.instance<PokemonDbService>();
+    _paginationService = GetIt.instance<PaginationService>();
+  }
 
   Future<Either<Failure, T>> _tryServiceRequest<T>(Future<T> Function() body) async {
     try {

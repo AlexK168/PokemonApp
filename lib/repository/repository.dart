@@ -11,8 +11,8 @@ abstract class PokemonRepository{
 }
 
 class PokemonRepositoryResponse<T> {
-  List<Failure> errors;
-  T? data;
+  final List<Failure> errors;
+  final T? data;
 
   PokemonRepositoryResponse(this.data, this.errors);
 }

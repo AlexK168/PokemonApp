@@ -8,9 +8,13 @@ import 'package:pokemon_app/hive_models/hive_pokemon.dart';
 import '../exceptions.dart';
 
 class PokemonDbService {
-  final Box pokemonBox;
+  late final Box pokemonBox;
 
-  PokemonDbService(this.pokemonBox);
+  Future init() async {
+    await Hive.initFlutter();
+    Hive.registerAdapter(HivePokemonAdapter());
+    pokemonBox = await Hive.openBox('pokemon_box');
+  }
 
   Future<R> _tryRequest<R>(Future<R> Function() body) async {
     try {

@@ -11,6 +11,8 @@ import '../DTO/pokemon_list_item.dart';
 class PokemonApiService{
   static const String _apiBaseurl = "https://pokeapi.co/api/v2/pokemon/";
 
+  const PokemonApiService();
+
   Future<R> _tryRequest<R>(Future<R> Function() body) async {
     try {
       return await body();

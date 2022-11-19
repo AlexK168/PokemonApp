@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_bloc.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_event.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_state.dart';
 import 'package:pokemon_app/pages/pokemon_detail_page.dart';
 import 'package:pokemon_app/utils/show_snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../repository/repository_impl.dart';
+import '../repository/repository.dart';
 
 class PokemonListPage extends StatefulWidget {
   const PokemonListPage({Key? key}) : super(key: key);
@@ -20,8 +21,8 @@ class _PokemonListPageState extends State<PokemonListPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => PokemonListBloc(
-        RepositoryProvider.of<PokemonRepositoryImpl>(context)
-      )..add(LoadListEvent()),
+        GetIt.instance<PokemonRepository>()
+      )..add(const LoadListEvent()),
       child: BlocConsumer<PokemonListBloc, PokemonListState>(
         listener: (context, state) {
           if (state is ErrorState) {
@@ -36,7 +37,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
               actions: [
                 IconButton(
                   onPressed: () async {
-                    BlocProvider.of<PokemonListBloc>(context).add(LoadListEvent());
+                    BlocProvider.of<PokemonListBloc>(context).add(const LoadListEvent());
                   },
                   icon: const Icon(Icons.refresh))
               ],

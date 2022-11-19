@@ -1,26 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:pokemon_app/constants.dart';
-import 'package:pokemon_app/repository/repository_impl.dart';
-import 'package:pokemon_app/services/pagination_service.dart';
-import 'package:pokemon_app/services/pokemon_api_service.dart';
-import 'package:pokemon_app/services/pokemon_db_service.dart';
-import 'hive_models/hive_pokemon.dart';
+import 'package:pokemon_app/getit_config.dart';
 import 'pages/pokemon_list_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
-  await Hive.initFlutter();
-  Hive.registerAdapter(HivePokemonAdapter());
-  var box = await Hive.openBox('pokemon_box');
-  runApp(
-    RepositoryProvider(
-      create: (context) => box,
-      child: const MyApp()
-    )
-  );
+  setupGetIt();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -28,21 +13,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => PokemonRepositoryImpl(
-        PokemonApiService(),
-        PokemonDbService(RepositoryProvider.of<Box>(context)),
-        PaginationService(limit: itemsOnPokemonListPage),
+    return MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.yellow,
       ),
-      child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.yellow,
-        ),
-        home: const PokemonListPage(),
-      ),
+      home: const PokemonListPage(),
     );
   }
 }
