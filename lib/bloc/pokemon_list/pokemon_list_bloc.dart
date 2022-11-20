@@ -62,6 +62,8 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
           startOfList: pokemonList.startOfList,
           endOfList: pokemonList.endOfList,
         ));
+      } else if (errors.isEmpty) {
+        emit(const ErrorState(PokemonListPageErrorCode.unknownError));
       }
     });
   }
