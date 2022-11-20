@@ -21,13 +21,15 @@ class LoadedState extends PokemonListState {
   List<Object?> get props => [pokemonList];
 }
 
-class ErrorState extends PokemonListState {
-  static const int unknownError = 1;
-  static const int networkError = 2;
-  static const int noInternetError = 3;
-  static const int dbError = 4;
+enum PokemonListPageErrorCode {
+   unknownError,
+   networkError,
+   noInternetError,
+   dbError,
+}
 
-  final int errorCode;
+class ErrorState extends PokemonListState {
+  final PokemonListPageErrorCode errorCode;
 
   const ErrorState(this.errorCode);
 

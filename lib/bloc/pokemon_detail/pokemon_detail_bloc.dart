@@ -26,13 +26,13 @@ class PokemonDetailBloc extends Bloc<PokemonDetailEvent, PokemonDetailState> {
 
       for (Failure f in errors) {
         if (f == Failure.noInternetError) {
-          emit(const ErrorState(ErrorState.noInternetError));
+          emit(const ErrorState(PokemonDetailErrorCode.noInternetError));
         } else if (f == Failure.networkError) {
-          emit(const ErrorState(ErrorState.networkError));
+          emit(const ErrorState(PokemonDetailErrorCode.networkError));
         } else if (f == Failure.dbError){
-          emit(const ErrorState(ErrorState.dbError));
+          emit(const ErrorState(PokemonDetailErrorCode.dbError));
         } else {
-          emit(const ErrorState(ErrorState.unknownError));
+          emit(const ErrorState(PokemonDetailErrorCode.unknownError));
         }
       }
 

@@ -103,15 +103,16 @@ class _PokemonListPageState extends State<PokemonListPage> {
 
   String getErrorString(ErrorState state) {
     switch(state.errorCode) {
-      case ErrorState.networkError:
+      case PokemonListPageErrorCode.networkError:
         return AppLocalizations.of(context)!.networkErrorMsg;
-      case ErrorState.dbError:
+      case PokemonListPageErrorCode.dbError:
         return AppLocalizations.of(context)!.cacheErrorMsg;
-      case ErrorState.unknownError:
-        return AppLocalizations.of(context)!.networkErrorMsg;
-      case ErrorState.noInternetError:
+      case PokemonListPageErrorCode.unknownError:
+        return AppLocalizations.of(context)!.unknownErrorMsg;
+      case PokemonListPageErrorCode.noInternetError:
         return AppLocalizations.of(context)!.noInternetErrorMsg;
+      default:
+        return AppLocalizations.of(context)!.unknownErrorMsg;
     }
-    return AppLocalizations.of(context)!.networkErrorMsg;
   }
 }

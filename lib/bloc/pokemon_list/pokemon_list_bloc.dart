@@ -44,13 +44,13 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
 
       for (Failure f in errors) {
         if (f == Failure.noInternetError) {
-          emit(const ErrorState(ErrorState.noInternetError));
+          emit(const ErrorState(PokemonListPageErrorCode.noInternetError));
         } else if (f == Failure.networkError) {
-          emit(const ErrorState(ErrorState.networkError));
+          emit(const ErrorState(PokemonListPageErrorCode.networkError));
         } else if (f == Failure.dbError){
-          emit(const ErrorState(ErrorState.dbError));
+          emit(const ErrorState(PokemonListPageErrorCode.dbError));
         } else {
-          emit(const ErrorState(ErrorState.unknownError));
+          emit(const ErrorState(PokemonListPageErrorCode.unknownError));
         }
       }
 

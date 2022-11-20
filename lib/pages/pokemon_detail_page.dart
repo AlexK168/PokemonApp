@@ -5,6 +5,7 @@ import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_state.dart';
 import 'package:pokemon_app/utils/show_snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../bloc/pokemon_detail/pokemon_detail_bloc.dart';
+import '../widgets/avatar.dart';
 
 class PokemonDetailPage extends StatefulWidget {
   final String pokemonDetailUrl;
@@ -15,7 +16,6 @@ class PokemonDetailPage extends StatefulWidget {
 }
 
 class _PokemonDetailPageState extends State<PokemonDetailPage> {
-  bool _imageError = false;
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -41,29 +41,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Builder(builder: (context) {
-                            if (state.pokemonDetail.image == null || _imageError) {
-                              return const Icon(
-                                Icons.question_mark,
-                                size: 140,
-                              );
-                            } else {
-                              return CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                  state.pokemonDetail.image ?? AppLocalizations.of(context)!.blank
-                                ),
-                                radius: 70,
-                                onBackgroundImageError: (_, __) {
-                                  showSnackBar(
-                                    context, AppLocalizations.of(context)!.pictureLoadError
-                                  );
-                                  setState(() {
-                                    _imageError = true;
-                                  });
-                                },
-                              );
-                            }
-                          }),
+                          Avatar(url: state.pokemonDetail.image ?? ""),
                           const SizedBox(height: 8),
                           Text(
                             state.pokemonDetail.name ?? AppLocalizations.of(context)!.unknown,
@@ -137,18 +115,18 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
     );
   }
 
-  // TODO: ELIMINATE CODE DUPLICATION (Same function in pokemon list page)
   String getErrorString(ErrorState state) {
     switch(state.errorCode) {
-      case ErrorState.networkError:
+      case PokemonDetailErrorCode.networkError:
         return AppLocalizations.of(context)!.networkErrorMsg;
-      case ErrorState.dbError:
+      case PokemonDetailErrorCode.dbError:
         return AppLocalizations.of(context)!.cacheErrorMsg;
-      case ErrorState.unknownError:
-        return AppLocalizations.of(context)!.networkErrorMsg;
-      case ErrorState.noInternetError:
+      case PokemonDetailErrorCode.unknownError:
+        return AppLocalizations.of(context)!.unknownErrorMsg;
+      case PokemonDetailErrorCode.noInternetError:
         return AppLocalizations.of(context)!.noInternetErrorMsg;
+      default:
+        return AppLocalizations.of(context)!.unknownErrorMsg;
     }
-    return AppLocalizations.of(context)!.networkErrorMsg;
   }
 }
