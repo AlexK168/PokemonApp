@@ -51,7 +51,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
                     child: Column(
                       children: [
                         Expanded(
-                          child: ListView.separated(
+                          child: state.pokemonList.isNotEmpty ? ListView.separated(
                             itemCount: state.pokemonList.length,
                             itemBuilder: ((context, index) => ListTile(
                               title: Text(state.pokemonList[index].name),
@@ -64,6 +64,10 @@ class _PokemonListPageState extends State<PokemonListPage> {
                               },
                             )),
                             separatorBuilder: (context, index) => const Divider(),
+                          ): Center(
+                            child: Text(
+                              AppLocalizations.of(context)!.emptyPokemonList
+                            ),
                           )
                         ),
                         Row(

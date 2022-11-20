@@ -11,5 +11,6 @@
   "networkErrorMsg": "Network error occurred :(",
   "cacheErrorMsg": "Can't load data from cache :(",
   "unknownErrorMsg": "Some unknown error occurred. Sry :(",
-  "noInternetErrorMsg": "No internet connection."
+  "noInternetErrorMsg": "No internet connection.",
+  "emptyPokemonList": "All pokemons disappeared..."
 }
