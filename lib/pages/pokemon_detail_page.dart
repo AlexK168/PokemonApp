@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_event.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_state.dart';
 import 'package:pokemon_app/utils/show_snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../bloc/pokemon_detail/pokemon_detail_bloc.dart';
-import '../repository/repository.dart';
 
 class PokemonDetailPage extends StatefulWidget {
   final String pokemonDetailUrl;
@@ -21,9 +19,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => PokemonDetailBloc(
-        GetIt.instance<PokemonRepository>()
-      )..add(LoadDetailEvent(widget.pokemonDetailUrl)),
+      create: (context) => PokemonDetailBloc()..add(LoadDetailEvent(widget.pokemonDetailUrl)),
       child: Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.pokemonDetailTitle),

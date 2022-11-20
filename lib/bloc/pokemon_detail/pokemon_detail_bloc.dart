@@ -1,16 +1,24 @@
 import 'package:bloc/bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_event.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_state.dart';
 import 'package:pokemon_app/exceptions.dart';
 import 'package:pokemon_app/repository/repository.dart';
-
 import '../../entities/pokemon_detail.dart';
 
-
 class PokemonDetailBloc extends Bloc<PokemonDetailEvent, PokemonDetailState> {
-  final PokemonRepository _pokemonRepository;
+  late PokemonRepository _pokemonRepository;
 
-  PokemonDetailBloc(this._pokemonRepository) : super(LoadingState()) {
+  PokemonDetailBloc() : super(LoadingState()) {
+    _getRepository();
+    _registerLoadDetailEvent();
+  }
+
+  void _getRepository() {
+    _pokemonRepository = GetIt.instance<PokemonRepository>();
+  }
+
+  void _registerLoadDetailEvent() {
     on<LoadDetailEvent>((event, emit) async {
       emit(LoadingState());
       final response = await _pokemonRepository.getPokemon(event.pokemonDetailUrl);
@@ -31,7 +39,7 @@ class PokemonDetailBloc extends Bloc<PokemonDetailEvent, PokemonDetailState> {
       PokemonDetail? pokemon = response.data;
       if (pokemon != null) {
         emit(LoadedState(
-          pokemon
+            pokemon
         ));
       }
     });
