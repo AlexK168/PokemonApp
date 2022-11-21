@@ -3,8 +3,7 @@ abstract class PokemonListEvent{
 }
 
 class LoadListEvent extends PokemonListEvent {
-  final bool loadFavorite;
-  const LoadListEvent({this.loadFavorite = false});
+  const LoadListEvent();
 }
 
 class LoadNextEvent extends PokemonListEvent {

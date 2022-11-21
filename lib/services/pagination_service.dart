@@ -1,9 +1,12 @@
 class PaginationService{
-  final int limit;
-  int currentOffset = 0;
-  int count = 0;
+  static const int _defaultLimit = 20;
+  static const int _defaultOffset = 0;
+  static const int _defaultCount = 0;
 
-  PaginationService({required this.limit});
+  int limit = _defaultLimit;
+  int currentOffset = _defaultOffset;
+  int count = _defaultCount;
+
 
   void updateCount(int newCount) {
     count = newCount;

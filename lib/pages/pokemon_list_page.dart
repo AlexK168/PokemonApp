@@ -35,9 +35,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
                   if (state is LoadedState) {
                     return IconButton(
                       onPressed: () {
-                        BlocProvider.of<PokemonListBloc>(context).add(
-                          LoadListEvent(loadFavorite: !state.favoritesActive)
-                        );
+                        BlocProvider.of<PokemonListBloc>(context).add(const LoadListEvent());
                       },
                       icon: state.favoritesActive ?
                         const Icon(Icons.favorite):
@@ -51,9 +49,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
                   if (state is LoadedState) {
                     return IconButton(
                       onPressed: () async {
-                        BlocProvider.of<PokemonListBloc>(context).add(
-                          LoadListEvent(loadFavorite: state.favoritesActive)
-                        );
+                        BlocProvider.of<PokemonListBloc>(context).add(const LoadListEvent());
                       },
                       icon: const Icon(Icons.refresh),
                     );

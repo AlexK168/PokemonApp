@@ -1,5 +1,5 @@
-class PokemonListItem {
-  PokemonListItem({
+class BlocPokemon {
+  BlocPokemon({
     required this.name,
     required this.url,
     required this.isFavorite

@@ -9,7 +9,7 @@ import 'package:pokemon_app/services/pokemon_db_service.dart';
 
 void setupGetIt() {
   GetIt.instance.registerSingleton<PokemonApiService>(const PokemonApiService());
-  GetIt.instance.registerSingleton<PaginationService>(PaginationService(limit: itemsOnPokemonListPage));
+  GetIt.instance.registerSingleton<PaginationService>(PaginationService());
   GetIt.instance.registerSingletonAsync<PokemonDbService>(() async => PokemonDbService()..init());
   GetIt.instance.registerSingletonAsync<FavoritesService>(() async => FavoritesService()..init());
   GetIt.instance.registerSingletonWithDependencies<PokemonRepository>(

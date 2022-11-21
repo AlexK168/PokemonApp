@@ -1,10 +1,10 @@
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:pokemon_app/DTO/pokemon_list.dart';
-import 'package:pokemon_app/DTO/pokemon.dart';
+import 'package:pokemon_app/DTO/service_pokemon_list.dart';
 import 'package:pokemon_app/entities/pokemon_detail.dart';
 import 'package:pokemon_app/hive_models/hive_pokemon.dart';
 
+import '../DTO/service_pokemon.dart';
 import '../exceptions.dart';
 
 class PokemonDbService {
@@ -54,7 +54,7 @@ class PokemonDbService {
     });
   }
 
-  Future<PokemonList> getPokemonListWithCount({int offset=0, int limit=20}) async {
+  Future<ServicePokemonList> getPokemonListWithCount({int offset=0, int limit=20}) async {
     return _tryRequest(() async {
       int count = _box.length;
       int start = offset;
@@ -66,10 +66,10 @@ class PokemonDbService {
         start = count;
       }
       var pokemonMap = _box.toMap().entries.toList().sublist(start, finish);
-      List<Pokemon> pokemonList = pokemonMap.map(
-              (e) => Pokemon(name: e.value.toString(), url: e.key)
+      List<ServicePokemon> pokemonList = pokemonMap.map(
+              (e) => ServicePokemon(name: e.value.toString(), url: e.key)
       ).toList();
-      return PokemonList(
+      return ServicePokemonList(
         pokemonList: pokemonList,
         count: count
       );

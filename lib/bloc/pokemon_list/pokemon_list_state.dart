@@ -1,4 +1,4 @@
-import 'package:pokemon_app/DTO/pokemon_list_item.dart';
+import 'package:pokemon_app/DTO/bloc_pokemon.dart';
 
 abstract class PokemonListState{
   const PokemonListState();
@@ -7,7 +7,7 @@ abstract class PokemonListState{
 class LoadingState extends PokemonListState {}
 
 class LoadedState extends PokemonListState {
-  final List<PokemonListItem> pokemonList;
+  final List<BlocPokemon> pokemonList;
   final bool startOfList;
   final bool endOfList;
   final bool favoritesActive;

@@ -5,8 +5,9 @@ import 'package:http/http.dart';
 import 'package:pokemon_app/exceptions.dart';
 import 'package:pokemon_app/entities/pokemon_detail.dart';
 
-import '../DTO/pokemon_list.dart';
-import '../DTO/pokemon.dart';
+import '../DTO/service_pokemon.dart';
+import '../DTO/service_pokemon_list.dart';
+
 
 class PokemonApiService{
   static const String _apiBaseurl = "https://pokeapi.co/api/v2/pokemon/";
@@ -42,23 +43,23 @@ class PokemonApiService{
     );
   }
 
-  Pokemon _getPokemonListItemFromJson(Map<String, dynamic> json) => Pokemon(
+  ServicePokemon _getPokemonFromJson(Map<String, dynamic> json) => ServicePokemon(
       name: json["name"],
       url: json["url"],
     );
 
-  PokemonList _getPokemonListFromJson(Map<String, dynamic> json) {
+  ServicePokemonList _getPokemonListFromJson(Map<String, dynamic> json) {
     List<dynamic> parsedList = json['results'];
-    List<Pokemon> pokemonList = parsedList.map(
-            (i) => _getPokemonListItemFromJson(i)
+    List<ServicePokemon> pokemonList = parsedList.map(
+            (i) => _getPokemonFromJson(i)
     ).toList();
-    return PokemonList(
-        pokemonList: pokemonList,
-        count: json['count']
+    return ServicePokemonList(
+      pokemonList: pokemonList,
+      count: json['count']
     );
   }
 
-  Future<PokemonList> getPokemonListWithCount({int offset=0, int limit=20}) async {
+  Future<ServicePokemonList> getPokemonListWithCount({int offset=0, int limit=20}) async {
     var queryParams = {
       'offset': offset.toString(),
       'limit': limit.toString()

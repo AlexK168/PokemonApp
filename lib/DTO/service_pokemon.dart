@@ -1,5 +1,5 @@
-class Pokemon {
-  Pokemon({
+class ServicePokemon {
+  ServicePokemon({
     required this.name,
     required this.url,
   });

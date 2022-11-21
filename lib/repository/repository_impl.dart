@@ -1,29 +1,27 @@
 import 'package:either_dart/either.dart';
 import 'package:get_it/get_it.dart';
-import 'package:pokemon_app/DTO/pokemon_list_with_boundaries.dart';
+import 'package:pokemon_app/DTO/bloc_pokemon_list.dart';
+import 'package:pokemon_app/DTO/service_pokemon_list.dart';
 import 'package:pokemon_app/repository/repository.dart';
 import 'package:pokemon_app/services/pokemon_db_service.dart';
 
-import '../DTO/pokemon.dart';
-import '../DTO/pokemon_list.dart';
-import '../DTO/pokemon_list_item.dart';
+
+import '../DTO/bloc_pokemon.dart';
+import '../DTO/service_pokemon.dart';
 import '../entities/pokemon_detail.dart';
 import '../exceptions.dart';
 import '../services/favorites_service.dart';
-import '../services/pagination_service.dart';
 import '../services/pokemon_api_service.dart';
 
 class PokemonRepositoryImpl extends PokemonRepository {
 
   late PokemonApiService _apiService;
   late PokemonDbService _dbService;
-  late PaginationService _paginationService;
   late FavoritesService _favoritesService;
 
   PokemonRepositoryImpl() {
     _apiService = GetIt.instance<PokemonApiService>();
     _dbService = GetIt.instance<PokemonDbService>();
-    _paginationService = GetIt.instance<PaginationService>();
     _favoritesService = GetIt.instance<FavoritesService>();
   }
 
@@ -78,8 +76,8 @@ class PokemonRepositoryImpl extends PokemonRepository {
     );
   }
 
-  Future _saveDeepListToDb(PokemonList listToSave) async {
-    for (var listItem in listToSave.pokemonList) {
+  Future _saveDeepListToDb(List<ServicePokemon> listToSave) async {
+    for (ServicePokemon listItem in listToSave) {
       String detailUrl = listItem.url;
       final response = await _tryServiceRequest(() async {
         return _apiService.getPokemon(detailUrl);
@@ -95,76 +93,77 @@ class PokemonRepositoryImpl extends PokemonRepository {
     }
   }
 
-  void _saveDataToDb(PokemonRepositoryResponse<PokemonList> response) {
+  void _saveDataToDb(PokemonRepositoryResponse<ServicePokemonList> response) {
     // get errors from response - if there are no errors - can save to db
     if (response.errors.isEmpty && response.data != null) {
-      PokemonList listToSave = response.data ?? PokemonList(pokemonList: [], count: 0);
-      _saveDeepListToDb(listToSave);
+      ServicePokemonList listToSave = response.data ?? ServicePokemonList(pokemonList: [], count: 0);
+      _saveDeepListToDb(listToSave.pokemonList);
     }
   }
 
-  void _updatePaginationCounter(PokemonRepositoryResponse<PokemonList> response) {
-    if (response.data != null) {
-      _paginationService.updateCount(response.data!.count);
-    }
-  }
+  // void _updatePaginationCounter(PokemonRepositoryResponse<PokemonList> response) {
+  //   if (response.data != null) {
+  //     _paginationService.updateCount(response.data!.count);
+  //   }
+  // }
 
-  Future<List<PokemonListItem>> _getPokemonListWithFavFlags(PokemonList pokemonList) async {
-    List<PokemonListItem> pokemonListWithFavFlag = [];
-    for (Pokemon pokemon in pokemonList.pokemonList) {
+  Future<BlocPokemonList> _getPokemonListWithFavFlags(ServicePokemonList pokemonList) async {
+    List<BlocPokemon> pokemonListWithFavFlag = [];
+    for (ServicePokemon pokemon in pokemonList.pokemonList) {
       var response = await _tryServiceRequest(() => _favoritesService.isFavorite(pokemon.url));
       pokemonListWithFavFlag.add(
-        PokemonListItem(
+        BlocPokemon(
           name: pokemon.name,
           url: pokemon.url,
           isFavorite: response.isRight ? response.right : false
         )
       );
     }
-    return pokemonListWithFavFlag;
+    return BlocPokemonList(
+      pokemonList: pokemonListWithFavFlag,
+      count: pokemonList.count
+    );
   }
 
-  @override
-  void scrollToNext() {
-    _paginationService.toNextPage();
-  }
+  // @override
+  // void scrollToNext() {
+  //   _paginationService.toNextPage();
+  // }
+  //
+  // @override
+  // void scrollToPrev() {
+  //   _paginationService.toPrevPage();
+  // }
 
   @override
-  void scrollToPrev() {
-    _paginationService.toPrevPage();
-  }
-
-  @override
-  Future<PokemonRepositoryResponse<PokemonListWithBoundaries>> getPokemonListWithBoundaries() async {
-    final response = await _fetchRepositoryData<PokemonList>(
+  Future<PokemonRepositoryResponse<BlocPokemonList>> getPokemonListWithCount({
+    required int limit,
+    required int offset,
+  }) async {
+    final response = await _fetchRepositoryData<ServicePokemonList>(
       apiFetchServiceRequest: () {
         return _apiService.getPokemonListWithCount(
-          offset: _paginationService.currentOffset,
-          limit: _paginationService.limit
+          offset: offset,
+          limit: limit
         );
       },
       dbFetchRequest: () {
         return _dbService.getPokemonListWithCount(
-          offset: _paginationService.currentOffset,
-          limit: _paginationService.limit
+          offset: offset,
+          limit: limit
         );
       }
     );
     _saveDataToDb(response);
-    _updatePaginationCounter(response);
-    PokemonList? pokemonList = response.data;
+    ServicePokemonList? pokemonList = response.data;
     if (pokemonList == null) {
-      return PokemonRepositoryResponse<PokemonListWithBoundaries>(null, response.errors);
+      return PokemonRepositoryResponse<BlocPokemonList>(null, response.errors);
     }
 
-    List<PokemonListItem> pokemonListWithFavFlags = await _getPokemonListWithFavFlags(pokemonList);
+    BlocPokemonList pokemonListWithFavFlags = await _getPokemonListWithFavFlags(pokemonList);
 
-    return PokemonRepositoryResponse<PokemonListWithBoundaries>(
-      PokemonListWithBoundaries(
-        pokemonList: pokemonListWithFavFlags,
-        endOfList: _paginationService.endOfList(),
-        startOfList: _paginationService.startOfList(),
-      ),
+    return PokemonRepositoryResponse<BlocPokemonList>(
+      pokemonListWithFavFlags,
       response.errors
     );
   }
