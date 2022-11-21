@@ -1,5 +1,4 @@
 import 'package:get_it/get_it.dart';
-import 'package:pokemon_app/constants.dart';
 import 'package:pokemon_app/repository/repository.dart';
 import 'package:pokemon_app/repository/repository_impl.dart';
 import 'package:pokemon_app/services/favorites_service.dart';

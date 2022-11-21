@@ -101,12 +101,6 @@ class PokemonRepositoryImpl extends PokemonRepository {
     }
   }
 
-  // void _updatePaginationCounter(PokemonRepositoryResponse<PokemonList> response) {
-  //   if (response.data != null) {
-  //     _paginationService.updateCount(response.data!.count);
-  //   }
-  // }
-
   Future<BlocPokemonList> _getPokemonListWithFavFlags(ServicePokemonList pokemonList) async {
     List<BlocPokemon> pokemonListWithFavFlag = [];
     for (ServicePokemon pokemon in pokemonList.pokemonList) {
@@ -124,16 +118,6 @@ class PokemonRepositoryImpl extends PokemonRepository {
       count: pokemonList.count
     );
   }
-
-  // @override
-  // void scrollToNext() {
-  //   _paginationService.toNextPage();
-  // }
-  //
-  // @override
-  // void scrollToPrev() {
-  //   _paginationService.toPrevPage();
-  // }
 
   @override
   Future<PokemonRepositoryResponse<BlocPokemonList>> getPokemonListWithCount({
