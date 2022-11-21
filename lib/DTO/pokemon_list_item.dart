@@ -2,8 +2,10 @@ class PokemonListItem {
   PokemonListItem({
     required this.name,
     required this.url,
+    required this.isFavorite
   });
 
-  String name;
-  String url;
+  final String name;
+  final String url;
+  final bool isFavorite;
 }

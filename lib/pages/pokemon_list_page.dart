@@ -31,11 +31,36 @@ class _PokemonListPageState extends State<PokemonListPage> {
             appBar: AppBar(
               title: Text(AppLocalizations.of(context)!.pokemonListTitle),
               actions: [
-                IconButton(
-                  onPressed: () async {
-                    BlocProvider.of<PokemonListBloc>(context).add(const LoadListEvent());
-                  },
-                  icon: const Icon(Icons.refresh))
+                Builder(builder: (context) {
+                  if (state is LoadedState) {
+                    return IconButton(
+                      onPressed: () {
+                        BlocProvider.of<PokemonListBloc>(context).add(
+                          LoadListEvent(loadFavorite: !state.favoritesActive)
+                        );
+                      },
+                      icon: state.favoritesActive ?
+                        const Icon(Icons.favorite):
+                        const Icon(Icons.favorite_border)
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
+                Builder(builder: (context) {
+                  if (state is LoadedState) {
+                    return IconButton(
+                      onPressed: () async {
+                        BlocProvider.of<PokemonListBloc>(context).add(
+                          LoadListEvent(loadFavorite: state.favoritesActive)
+                        );
+                      },
+                      icon: const Icon(Icons.refresh),
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
               ],
             ),
             body: Builder(
@@ -55,6 +80,19 @@ class _PokemonListPageState extends State<PokemonListPage> {
                             itemCount: state.pokemonList.length,
                             itemBuilder: ((context, index) => ListTile(
                               title: Text(state.pokemonList[index].name),
+                              trailing: IconButton(
+                                icon: state.pokemonList[index].isFavorite ?
+                                  const Icon(Icons.favorite):
+                                  const Icon(Icons.favorite_border),
+                                onPressed: () {
+                                  BlocProvider.of<PokemonListBloc>(context).add(
+                                    SwitchFavoriteEvent(
+                                      state.pokemonList[index].url,
+                                      state.favoritesActive,
+                                    )
+                                  );
+                                },
+                              ),
                               onTap: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(builder: (context) => PokemonDetailPage(
@@ -75,13 +113,13 @@ class _PokemonListPageState extends State<PokemonListPage> {
                           children: [
                             IconButton(
                               onPressed: state.startOfList ? null : () {
-                                BlocProvider.of<PokemonListBloc>(context).add(LoadPrevEvent());
+                                BlocProvider.of<PokemonListBloc>(context).add(const LoadPrevEvent());
                               },
                               icon: const Icon(Icons.arrow_back),
                             ),
                             IconButton(
                               onPressed: state.endOfList ? null : () {
-                                BlocProvider.of<PokemonListBloc>(context).add(LoadNextEvent());
+                                BlocProvider.of<PokemonListBloc>(context).add(const LoadNextEvent());
                               },
                               icon: const Icon(Icons.arrow_forward),
                             )

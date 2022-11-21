@@ -1,7 +1,7 @@
-import 'package:pokemon_app/DTO/pokemon_list_item.dart';
+import 'package:pokemon_app/DTO/pokemon.dart';
 
 class PokemonList {
-  final List<PokemonListItem> pokemonList;
+  final List<Pokemon> pokemonList;
   final int count;
 
   PokemonList({required this.pokemonList, required this.count});

@@ -4,10 +4,10 @@ import '../exceptions.dart';
 
 abstract class PokemonRepository{
   Future<PokemonRepositoryResponse<PokemonDetail>> getPokemon(String url);
-  Future<PokemonRepositoryResponse<PokemonListWithBoundaries>> getPokemonListWithBoundaries({
-    required bool toPrevPage,
-    required bool toNextPage,
-  });
+  Future<PokemonRepositoryResponse<PokemonListWithBoundaries>> getPokemonListWithBoundaries();
+  Future<PokemonRepositoryResponse<bool>> switchFavorite(String url);
+  void scrollToNext();
+  void scrollToPrev();
 }
 
 class PokemonRepositoryResponse<T> {

@@ -3,12 +3,20 @@ abstract class PokemonListEvent{
 }
 
 class LoadListEvent extends PokemonListEvent {
-  final bool toNext;
-  final bool toPrev;
-
-  const LoadListEvent({this.toNext = false, this.toPrev = false});
+  final bool loadFavorite;
+  const LoadListEvent({this.loadFavorite = false});
 }
 
-class LoadNextEvent extends PokemonListEvent {}
+class LoadNextEvent extends PokemonListEvent {
+  const LoadNextEvent();
+}
 
-class LoadPrevEvent extends PokemonListEvent {}
+class LoadPrevEvent extends PokemonListEvent {
+  const LoadPrevEvent();
+}
+
+class SwitchFavoriteEvent extends PokemonListEvent {
+  final String url;
+  final bool isFavoriteActive;
+  const SwitchFavoriteEvent(this.url, this.isFavoriteActive);
+}

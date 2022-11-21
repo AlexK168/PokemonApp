@@ -14,6 +14,7 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
     _registerLoadListEvent();
     _registerLoadPrevEvent();
     _registerLoadNextEvent();
+    _registerSwitchFavoriteEvent();
   }
 
   void _getRepository() {
@@ -22,37 +23,53 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
 
   void _registerLoadNextEvent() {
     on<LoadNextEvent>((event, emit) async {
-      add(const LoadListEvent(toNext: true));
+      _pokemonRepository.scrollToNext();
+      add(const LoadListEvent());
     });
   }
 
   void _registerLoadPrevEvent() {
     on<LoadPrevEvent>((event, emit) async {
-      add(const LoadListEvent(toPrev: true));
+      _pokemonRepository.scrollToPrev();
+      add(const LoadListEvent());
+    });
+  }
+
+  void _emitErrors(Emitter<PokemonListState> emit , List<Failure> errors) {
+    for (Failure f in errors) {
+      if (f == Failure.noInternetError) {
+        emit(const ErrorState(PokemonListPageErrorCode.noInternetError));
+      } else if (f == Failure.networkError) {
+        emit(const ErrorState(PokemonListPageErrorCode.networkError));
+      } else if (f == Failure.dbError){
+        emit(const ErrorState(PokemonListPageErrorCode.dbError));
+      } else {
+        emit(const ErrorState(PokemonListPageErrorCode.unknownError));
+      }
+    }
+  }
+
+  void _registerSwitchFavoriteEvent() {
+    on<SwitchFavoriteEvent>((event, emit) async {
+      emit(LoadingState());
+      final response = await _pokemonRepository.switchFavorite(event.url);
+
+      List<Failure> errors = response.errors;
+      _emitErrors(emit, errors);
+
+      add(LoadListEvent(loadFavorite: event.isFavoriteActive));
     });
   }
 
   void _registerLoadListEvent() {
     on<LoadListEvent>((event, emit) async {
       emit(LoadingState());
-      final response = await _pokemonRepository.getPokemonListWithBoundaries(
-        toPrevPage: event.toPrev,
-        toNextPage: event.toNext,
-      );
+      // event.loadFavorite;
+
+      final response = await _pokemonRepository.getPokemonListWithBoundaries();
 
       List<Failure> errors = response.errors;
-
-      for (Failure f in errors) {
-        if (f == Failure.noInternetError) {
-          emit(const ErrorState(PokemonListPageErrorCode.noInternetError));
-        } else if (f == Failure.networkError) {
-          emit(const ErrorState(PokemonListPageErrorCode.networkError));
-        } else if (f == Failure.dbError){
-          emit(const ErrorState(PokemonListPageErrorCode.dbError));
-        } else {
-          emit(const ErrorState(PokemonListPageErrorCode.unknownError));
-        }
-      }
+      _emitErrors(emit, errors);
 
       PokemonListWithBoundaries? pokemonList = response.data;
 
@@ -61,6 +78,7 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
           pokemonList: pokemonList.pokemonList,
           startOfList: pokemonList.startOfList,
           endOfList: pokemonList.endOfList,
+          favoritesActive: event.loadFavorite
         ));
       } else if (errors.isEmpty) {
         emit(const ErrorState(PokemonListPageErrorCode.unknownError));

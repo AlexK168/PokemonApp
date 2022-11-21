@@ -10,8 +10,14 @@ class LoadedState extends PokemonListState {
   final List<PokemonListItem> pokemonList;
   final bool startOfList;
   final bool endOfList;
+  final bool favoritesActive;
 
-  const LoadedState({required this.pokemonList, required this.startOfList, required this.endOfList});
+  const LoadedState({
+    required this.pokemonList,
+    required this.startOfList,
+    required this.endOfList,
+    required this.favoritesActive,
+  });
 }
 
 enum PokemonListPageErrorCode {
