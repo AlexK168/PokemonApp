@@ -120,7 +120,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
                               icon: const Icon(Icons.arrow_forward),
                             )
                           ],
-                        )
+                        ),
                       ],
                     ),
                   );

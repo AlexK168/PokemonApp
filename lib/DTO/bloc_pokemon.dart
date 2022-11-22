@@ -2,7 +2,7 @@ class BlocPokemon {
   BlocPokemon({
     required this.name,
     required this.url,
-    required this.isFavorite
+    required this.isFavorite,
   });
 
   final String name;

@@ -4,8 +4,6 @@ import 'package:pokemon_app/DTO/bloc_pokemon_list.dart';
 import 'package:pokemon_app/DTO/service_pokemon_list.dart';
 import 'package:pokemon_app/repository/repository.dart';
 import 'package:pokemon_app/services/pokemon_db_service.dart';
-
-
 import '../DTO/bloc_pokemon.dart';
 import '../DTO/service_pokemon.dart';
 import '../entities/pokemon_detail.dart';
@@ -39,9 +37,7 @@ class PokemonRepositoryImpl extends PokemonRepository {
     required Future<T> Function() apiFetchServiceRequest,
     required Future<T> Function() dbFetchRequest,
   }) async {
-
     List<Failure> errors = [];
-
     final apiResponse = await _tryServiceRequest<T>(() async {
       return apiFetchServiceRequest();
     });
@@ -51,7 +47,6 @@ class PokemonRepositoryImpl extends PokemonRepository {
     // if api request threw an error
     // add error to error stack
     errors.add(apiResponse.left);
-
     final dbResponse = await _tryServiceRequest<T>(() async {
       return dbFetchRequest();
     });
@@ -86,7 +81,6 @@ class PokemonRepositoryImpl extends PokemonRepository {
         continue;
       }
       PokemonDetail pokemon = response.right;
-
       _tryServiceRequest(() {
         return _dbService.savePokemon(detailUrl, pokemon);
       });
@@ -143,9 +137,7 @@ class PokemonRepositoryImpl extends PokemonRepository {
     if (pokemonList == null) {
       return PokemonRepositoryResponse<BlocPokemonList>(null, response.errors);
     }
-
     BlocPokemonList pokemonListWithFavFlags = await _getPokemonListWithFavFlags(pokemonList);
-
     return PokemonRepositoryResponse<BlocPokemonList>(
       pokemonListWithFavFlags,
       response.errors,
@@ -199,7 +191,8 @@ class PokemonRepositoryImpl extends PokemonRepository {
           BlocPokemon(
             name: pokemon.name ?? "unknown",
             url: url,
-            isFavorite: true)
+            isFavorite: true,
+          )
         );
       } else {
         for (Failure err in response.errors) {
@@ -210,7 +203,7 @@ class PokemonRepositoryImpl extends PokemonRepository {
     return PokemonRepositoryResponse<BlocPokemonList>(
       BlocPokemonList(
         pokemonList: pokemonList,
-        count: pokemonList.length
+        count: pokemonList.length,
       ),
       errors.toList(),
     );

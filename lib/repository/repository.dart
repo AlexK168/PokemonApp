@@ -1,6 +1,4 @@
-
 import 'package:pokemon_app/DTO/bloc_pokemon_list.dart';
-
 import '../entities/pokemon_detail.dart';
 import '../exceptions.dart';
 
@@ -14,7 +12,7 @@ abstract class PokemonRepository{
 
   Future<PokemonRepositoryResponse<BlocPokemonList>> getFavoritePokemonListWithCount({
     required int limit,
-    required int offset
+    required int offset,
   });
 }
 

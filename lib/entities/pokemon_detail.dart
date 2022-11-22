@@ -10,5 +10,6 @@ class PokemonDetail{
     required this.image,
     required this.types,
     required this.weight,
-    required this.height});
+    required this.height,
+  });
 }

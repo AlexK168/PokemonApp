@@ -60,10 +60,8 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
     on<SwitchPokemonFavoriteEvent>((event, emit) async {
       emit(LoadingState());
       final response = await _pokemonRepository.switchFavorite(event.url);
-
       List<Failure> errors = response.errors;
       _emitErrors(emit, errors);
-
       add(const LoadListEvent());
     });
   }
@@ -74,17 +72,16 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
       final response = _modeController.mode == Mode.showAll ?
         await _pokemonRepository.getPokemonListWithCount(
           limit: _paginationService.limit,
-          offset: _paginationService.currentOffset
+          offset: _paginationService.currentOffset,
         ):
         await _pokemonRepository.getFavoritePokemonListWithCount(
-            limit: _paginationService.limit,
-            offset: _paginationService.currentOffset
+          limit: _paginationService.limit,
+          offset: _paginationService.currentOffset,
         );
       List<Failure> errors = response.errors;
       _emitErrors(emit, errors);
 
       BlocPokemonList? pokemonList = response.data;
-
       if (pokemonList != null) {
         _paginationService.updateCount(pokemonList.count);
         emit(LoadedState(

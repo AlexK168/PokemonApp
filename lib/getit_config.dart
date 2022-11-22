@@ -15,7 +15,6 @@ void setupGetIt() {
   GetIt.instance.registerSingleton<ModeController>(ModeController());
   GetIt.instance.registerSingletonWithDependencies<PokemonRepository>(
     () => PokemonRepositoryImpl(),
-    dependsOn: [PokemonDbService, FavoritesService]
+    dependsOn: [PokemonDbService, FavoritesService],
   );
-
 }

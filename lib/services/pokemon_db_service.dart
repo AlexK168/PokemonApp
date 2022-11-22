@@ -3,7 +3,6 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:pokemon_app/DTO/service_pokemon_list.dart';
 import 'package:pokemon_app/entities/pokemon_detail.dart';
 import 'package:pokemon_app/hive_models/hive_pokemon.dart';
-
 import '../DTO/service_pokemon.dart';
 import '../exceptions.dart';
 
@@ -29,11 +28,11 @@ class PokemonDbService {
   Future savePokemon(url, PokemonDetail pokemon) async {
     return _tryRequest(() async {
       _box.put(url, HivePokemon(
-          name: pokemon.name ?? "unknown",
-          weight: pokemon.weight ?? 0,
-          height: pokemon.height ?? 0,
-          image: pokemon.image ?? "",
-          types: pokemon.types ?? []
+        name: pokemon.name ?? "unknown",
+        weight: pokemon.weight ?? 0,
+        height: pokemon.height ?? 0,
+        image: pokemon.image ?? "",
+        types: pokemon.types ?? []
       ));
     });
   }
@@ -49,7 +48,7 @@ class PokemonDbService {
         image: pokemon.image,
         types: pokemon.types,
         weight: pokemon.weight,
-        height: pokemon.height
+        height: pokemon.height,
       );
     });
   }
@@ -71,7 +70,7 @@ class PokemonDbService {
       ).toList();
       return ServicePokemonList(
         pokemonList: pokemonList,
-        count: count
+        count: count,
       );
     });
   }

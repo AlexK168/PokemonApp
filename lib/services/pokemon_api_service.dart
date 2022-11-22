@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:pokemon_app/exceptions.dart';
 import 'package:pokemon_app/entities/pokemon_detail.dart';
-
 import '../DTO/service_pokemon.dart';
 import '../DTO/service_pokemon_list.dart';
 
@@ -51,22 +50,22 @@ class PokemonApiService{
   ServicePokemonList _getPokemonListFromJson(Map<String, dynamic> json) {
     List<dynamic> parsedList = json['results'];
     List<ServicePokemon> pokemonList = parsedList.map(
-            (i) => _getPokemonFromJson(i)
+      (i) => _getPokemonFromJson(i)
     ).toList();
     return ServicePokemonList(
       pokemonList: pokemonList,
-      count: json['count']
+      count: json['count'],
     );
   }
 
   Future<ServicePokemonList> getPokemonListWithCount({int offset=0, int limit=20}) async {
     var queryParams = {
       'offset': offset.toString(),
-      'limit': limit.toString()
+      'limit': limit.toString(),
     };
     return _tryRequest(() async {
       final response = await get(
-          Uri.parse(_apiBaseurl).replace(queryParameters: queryParams)
+          Uri.parse(_apiBaseurl).replace(queryParameters: queryParams),
       ).timeout(const Duration(seconds: 5));
       if (response.statusCode != 200) {
         throw const HttpException("Status code is not OK");
@@ -79,7 +78,7 @@ class PokemonApiService{
   Future<PokemonDetail> getPokemon(String detailUrl) async {
     return _tryRequest(() async {
       final response = await get(
-          Uri.parse(detailUrl)
+          Uri.parse(detailUrl),
       ).timeout(const Duration(seconds: 5));
       if (response.statusCode != 200) {
         throw const HttpException("Status code is not OK");

@@ -38,9 +38,7 @@ class PokemonDetailBloc extends Bloc<PokemonDetailEvent, PokemonDetailState> {
 
       PokemonDetail? pokemon = response.data;
       if (pokemon != null) {
-        emit(LoadedState(
-            pokemon
-        ));
+        emit(LoadedState(pokemon));
       } else if (errors.isEmpty) {
         emit(const ErrorState(PokemonDetailErrorCode.unknownError));
       }
