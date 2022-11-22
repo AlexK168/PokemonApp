@@ -73,6 +73,25 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/pokemon_types_images/bug.png
+    - assets/pokemon_types_images/dark.png
+    - assets/pokemon_types_images/dragon.png
+    - assets/pokemon_types_images/electric.png
+    - assets/pokemon_types_images/fairy.png
+    - assets/pokemon_types_images/fighting.png
+    - assets/pokemon_types_images/fire.png
+    - assets/pokemon_types_images/flying.png
+    - assets/pokemon_types_images/ghost.png
+    - assets/pokemon_types_images/grass.png
+    - assets/pokemon_types_images/ground.png
+    - assets/pokemon_types_images/ice.png
+    - assets/pokemon_types_images/normal.png
+    - assets/pokemon_types_images/poison.png
+    - assets/pokemon_types_images/psychic.png
+    - assets/pokemon_types_images/rock.png
+    - assets/pokemon_types_images/steel.png
+    - assets/pokemon_types_images/water.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

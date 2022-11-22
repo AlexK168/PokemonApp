@@ -72,31 +72,32 @@ class _PokemonListPageState extends State<PokemonListPage> {
                     child: Column(
                       children: [
                         Expanded(
-                          child: state.pokemonList.isNotEmpty ? ListView.separated(
+                          child: state.pokemonList.isNotEmpty ? ListView.builder(
                             itemCount: state.pokemonList.length,
-                            itemBuilder: ((context, index) => ListTile(
-                              title: Text(state.pokemonList[index].name),
-                              trailing: IconButton(
-                                icon: state.pokemonList[index].isFavorite ?
-                                  const Icon(Icons.favorite):
-                                  const Icon(Icons.favorite_border),
-                                onPressed: () {
-                                  BlocProvider.of<PokemonListBloc>(context).add(
-                                    SwitchPokemonFavoriteEvent(
-                                      state.pokemonList[index].url
-                                    )
+                            itemBuilder: ((context, index) => Card(
+                              child: ListTile(
+                                title: Text(state.pokemonList[index].name),
+                                trailing: IconButton(
+                                  icon: state.pokemonList[index].isFavorite ?
+                                    Icon(Icons.favorite, color: Theme.of(context).colorScheme.primary,):
+                                    const Icon(Icons.favorite_border),
+                                  onPressed: () {
+                                    BlocProvider.of<PokemonListBloc>(context).add(
+                                      SwitchPokemonFavoriteEvent(
+                                        state.pokemonList[index].url
+                                      )
+                                    );
+                                  },
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (context) => PokemonDetailPage(
+                                      pokemonDetailUrl: state.pokemonList[index].url,
+                                    )),
                                   );
                                 },
                               ),
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (context) => PokemonDetailPage(
-                                    pokemonDetailUrl: state.pokemonList[index].url,
-                                  )),
-                                );
-                              },
                             )),
-                            separatorBuilder: (context, index) => const Divider(),
                           ): Center(
                             child: Text(
                               AppLocalizations.of(context)!.emptyPokemonList
