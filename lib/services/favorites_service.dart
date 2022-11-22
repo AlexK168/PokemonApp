@@ -32,7 +32,7 @@ class FavoritesService{
       var boxValues = _box.values;
       if (boxValues.contains(url)) {
         int index = boxValues.toList().indexOf(url);
-        _box.deleteAt(index);
+        await _box.deleteAt(index);
       }
     });
   }
@@ -40,8 +40,23 @@ class FavoritesService{
   Future addToFavorites(String url) async {
     return _tryRequest(() async {
       if (!_box.values.contains(url)) {
-        _box.add(url);
+        await _box.add(url);
       }
+    });
+  }
+
+  Future<List<String>> getFavoriteUrlsWithCount({required int offset, required int limit}) async {
+    return _tryRequest(() async {
+      int count = _box.length;
+      int start = offset;
+      int finish = offset + limit;
+      if (finish > count) {
+        finish = count;
+      }
+      if (start > count) {
+        start = count;
+      }
+      return _box.values.map((e) => e as String).toList().sublist(start, finish);
     });
   }
 }

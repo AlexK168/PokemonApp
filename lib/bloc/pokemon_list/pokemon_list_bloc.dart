@@ -5,23 +5,27 @@ import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_event.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_state.dart';
 import 'package:pokemon_app/exceptions.dart';
 import 'package:pokemon_app/repository/repository.dart';
+import '../../services/mode_controller.dart';
 import '../../services/pagination_service.dart';
 
 class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
   late PokemonRepository _pokemonRepository;
   late PaginationService _paginationService;
+  late ModeController _modeController;
 
   PokemonListBloc() : super(LoadingState()) {
     _getDependencies();
     _registerLoadListEvent();
     _registerLoadPrevEvent();
     _registerLoadNextEvent();
-    _registerSwitchFavoriteEvent();
+    _registerSwitchPokemonFavoriteEvent();
+    _registerSwitchFavoriteModeEvent();
   }
 
   void _getDependencies() {
     _pokemonRepository = GetIt.instance<PokemonRepository>();
     _paginationService = GetIt.instance<PaginationService>();
+    _modeController = GetIt.instance<ModeController>();
   }
 
   void _registerLoadNextEvent() {
@@ -52,8 +56,8 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
     }
   }
 
-  void _registerSwitchFavoriteEvent() {
-    on<SwitchFavoriteEvent>((event, emit) async {
+  void _registerSwitchPokemonFavoriteEvent() {
+    on<SwitchPokemonFavoriteEvent>((event, emit) async {
       emit(LoadingState());
       final response = await _pokemonRepository.switchFavorite(event.url);
 
@@ -67,12 +71,15 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
   void _registerLoadListEvent() {
     on<LoadListEvent>((event, emit) async {
       emit(LoadingState());
-
-      final response = await _pokemonRepository.getPokemonListWithCount(
-        limit: _paginationService.limit,
-        offset: _paginationService.currentOffset
-      );
-
+      final response = _modeController.mode == Mode.showAll ?
+        await _pokemonRepository.getPokemonListWithCount(
+          limit: _paginationService.limit,
+          offset: _paginationService.currentOffset
+        ):
+        await _pokemonRepository.getFavoritePokemonListWithCount(
+            limit: _paginationService.limit,
+            offset: _paginationService.currentOffset
+        );
       List<Failure> errors = response.errors;
       _emitErrors(emit, errors);
 
@@ -84,11 +91,19 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
           pokemonList: pokemonList.pokemonList,
           startOfList: _paginationService.startOfList(),
           endOfList: _paginationService.endOfList(),
-          favoritesActive: false
+          favoritesActive: _modeController.mode == Mode.showFavoritesOnly
         ));
       } else if (errors.isEmpty) {
         emit(const ErrorState(PokemonListPageErrorCode.unknownError));
       }
+    });
+  }
+
+  void _registerSwitchFavoriteModeEvent() {
+    on<SwitchFavoriteModeEvent>((event, emit) async {
+      _modeController.switchMode();
+      _paginationService.currentOffset = 0;
+      add(const LoadListEvent());
     });
   }
 }

@@ -11,6 +11,11 @@ abstract class PokemonRepository{
     required int offset,
   });
   Future<PokemonRepositoryResponse<bool>> switchFavorite(String url);
+
+  Future<PokemonRepositoryResponse<BlocPokemonList>> getFavoritePokemonListWithCount({
+    required int limit,
+    required int offset
+  });
 }
 
 class PokemonRepositoryResponse<T> {

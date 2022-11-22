@@ -37,7 +37,7 @@ class PokemonRepositoryImpl extends PokemonRepository {
 
   Future<PokemonRepositoryResponse<T>> _fetchRepositoryData<T> ({
     required Future<T> Function() apiFetchServiceRequest,
-    required Future<T> Function() dbFetchRequest
+    required Future<T> Function() dbFetchRequest,
   }) async {
 
     List<Failure> errors = [];
@@ -78,7 +78,7 @@ class PokemonRepositoryImpl extends PokemonRepository {
 
   Future _saveDeepListToDb(List<ServicePokemon> listToSave) async {
     for (ServicePokemon listItem in listToSave) {
-      String detailUrl = listItem.url;
+      final String detailUrl = listItem.url;
       final response = await _tryServiceRequest(() async {
         return _apiService.getPokemon(detailUrl);
       });
@@ -87,7 +87,7 @@ class PokemonRepositoryImpl extends PokemonRepository {
       }
       PokemonDetail pokemon = response.right;
 
-      _tryServiceRequest(() async {
+      _tryServiceRequest(() {
         return _dbService.savePokemon(detailUrl, pokemon);
       });
     }
@@ -96,7 +96,7 @@ class PokemonRepositoryImpl extends PokemonRepository {
   void _saveDataToDb(PokemonRepositoryResponse<ServicePokemonList> response) {
     // get errors from response - if there are no errors - can save to db
     if (response.errors.isEmpty && response.data != null) {
-      ServicePokemonList listToSave = response.data ?? ServicePokemonList(pokemonList: [], count: 0);
+      final listToSave = response.data ?? ServicePokemonList(pokemonList: [], count: 0);
       _saveDeepListToDb(listToSave.pokemonList);
     }
   }
@@ -104,18 +104,18 @@ class PokemonRepositoryImpl extends PokemonRepository {
   Future<BlocPokemonList> _getPokemonListWithFavFlags(ServicePokemonList pokemonList) async {
     List<BlocPokemon> pokemonListWithFavFlag = [];
     for (ServicePokemon pokemon in pokemonList.pokemonList) {
-      var response = await _tryServiceRequest(() => _favoritesService.isFavorite(pokemon.url));
+      final response = await _tryServiceRequest(() => _favoritesService.isFavorite(pokemon.url));
       pokemonListWithFavFlag.add(
         BlocPokemon(
           name: pokemon.name,
           url: pokemon.url,
-          isFavorite: response.isRight ? response.right : false
+          isFavorite: response.isRight ? response.right : false,
         )
       );
     }
     return BlocPokemonList(
       pokemonList: pokemonListWithFavFlag,
-      count: pokemonList.count
+      count: pokemonList.count,
     );
   }
 
@@ -128,18 +128,18 @@ class PokemonRepositoryImpl extends PokemonRepository {
       apiFetchServiceRequest: () {
         return _apiService.getPokemonListWithCount(
           offset: offset,
-          limit: limit
+          limit: limit,
         );
       },
       dbFetchRequest: () {
         return _dbService.getPokemonListWithCount(
           offset: offset,
-          limit: limit
+          limit: limit,
         );
       }
     );
     _saveDataToDb(response);
-    ServicePokemonList? pokemonList = response.data;
+    final ServicePokemonList? pokemonList = response.data;
     if (pokemonList == null) {
       return PokemonRepositoryResponse<BlocPokemonList>(null, response.errors);
     }
@@ -148,18 +148,18 @@ class PokemonRepositoryImpl extends PokemonRepository {
 
     return PokemonRepositoryResponse<BlocPokemonList>(
       pokemonListWithFavFlags,
-      response.errors
+      response.errors,
     );
   }
 
   @override
   Future<PokemonRepositoryResponse<bool>> switchFavorite(String url) async {
-    var response = await _tryServiceRequest(() => _favoritesService.isFavorite(url));
+    final response = await _tryServiceRequest(() => _favoritesService.isFavorite(url));
     if (response.isLeft) {
       return PokemonRepositoryResponse(null, [response.left]);
     }
     bool isFavorite = response.right;
-    var actionResponse = isFavorite ?
+    final actionResponse = isFavorite ?
       await _tryServiceRequest(() => _favoritesService.removeFromFavorites(url)):
       await _tryServiceRequest(() => _favoritesService.addToFavorites(url));
     if (actionResponse.isRight) {
@@ -167,5 +167,52 @@ class PokemonRepositoryImpl extends PokemonRepository {
     } else {
       return PokemonRepositoryResponse(isFavorite, [actionResponse.left]);
     }
+  }
+
+  @override
+  Future<PokemonRepositoryResponse<BlocPokemonList>> getFavoritePokemonListWithCount({
+    required int limit,
+    required int offset,
+  }) async {
+    final favServiceResponse = await _tryServiceRequest(() => _favoritesService.getFavoriteUrlsWithCount(
+      offset: offset,
+      limit: limit,
+    ));
+    if (favServiceResponse.isLeft) {
+      return PokemonRepositoryResponse(null, [favServiceResponse.left]);
+    }
+    final List<String> urls = favServiceResponse.right;
+    List<BlocPokemon> pokemonList = [];
+    Set<Failure> errors = {};
+    for (String url in urls) {
+      final response = await _fetchRepositoryData(
+        apiFetchServiceRequest: () {
+          return _apiService.getPokemon(url);
+        },
+        dbFetchRequest: () {
+          return _dbService.getPokemon(url);
+        }
+      );
+      PokemonDetail? pokemon = response.data;
+      if (pokemon != null) {
+        pokemonList.add(
+          BlocPokemon(
+            name: pokemon.name ?? "unknown",
+            url: url,
+            isFavorite: true)
+        );
+      } else {
+        for (Failure err in response.errors) {
+          errors.add(err);
+        }
+      }
+    }
+    return PokemonRepositoryResponse<BlocPokemonList>(
+      BlocPokemonList(
+        pokemonList: pokemonList,
+        count: pokemonList.length
+      ),
+      errors.toList(),
+    );
   }
 }
