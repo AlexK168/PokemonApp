@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokemon_app/getit_config.dart';
-import 'pages/pokemon_list_page.dart';
+import 'package:pokemon_app/pages/login_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      home: const PokemonListPage(),
+      home: const LoginPage(),
     );
   }
 }
