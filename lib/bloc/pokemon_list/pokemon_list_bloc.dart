@@ -44,15 +44,7 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
 
   void _emitErrors(Emitter<PokemonListState> emit , List<Failure> errors) {
     for (Failure f in errors) {
-      if (f == Failure.noInternetError) {
-        emit(const ErrorState(PokemonListPageErrorCode.noInternetError));
-      } else if (f == Failure.networkError) {
-        emit(const ErrorState(PokemonListPageErrorCode.networkError));
-      } else if (f == Failure.dbError){
-        emit(const ErrorState(PokemonListPageErrorCode.dbError));
-      } else {
-        emit(const ErrorState(PokemonListPageErrorCode.unknownError));
-      }
+      emit(ErrorState(f));
     }
   }
 
@@ -91,7 +83,7 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
           favoritesActive: _modeController.mode == Mode.showFavoritesOnly
         ));
       } else if (errors.isEmpty) {
-        emit(const ErrorState(PokemonListPageErrorCode.unknownError));
+        emit(const ErrorState(Failure.unknownError));
       }
     });
   }

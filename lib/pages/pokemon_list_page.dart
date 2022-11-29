@@ -4,6 +4,7 @@ import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_bloc.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_event.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_state.dart';
 import 'package:pokemon_app/pages/pokemon_detail_page.dart';
+import 'package:pokemon_app/utils/get_error_message.dart';
 import 'package:pokemon_app/utils/show_snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -22,8 +23,10 @@ class _PokemonListPageState extends State<PokemonListPage> {
       child: BlocConsumer<PokemonListBloc, PokemonListState>(
         listener: (context, state) {
           if (state is ErrorState) {
-            String errMsg = getErrorString(state);
-            showSnackBar(context, errMsg);
+            showSnackBar(
+              context,
+              getErrorMessage(context, state.error),
+            );
           }
         },
         builder: (context, state) {
@@ -127,7 +130,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
                 }
                 else if (state is ErrorState) {
                   return Center(
-                    child: Text(getErrorString(state)),
+                    child: Text(getErrorMessage(context, state.error)),
                   );
                 }
                 return Container();
@@ -137,20 +140,5 @@ class _PokemonListPageState extends State<PokemonListPage> {
         }
       ),
     );
-  }
-
-  String getErrorString(ErrorState state) {
-    switch(state.errorCode) {
-      case PokemonListPageErrorCode.networkError:
-        return AppLocalizations.of(context)!.networkErrorMsg;
-      case PokemonListPageErrorCode.dbError:
-        return AppLocalizations.of(context)!.cacheErrorMsg;
-      case PokemonListPageErrorCode.unknownError:
-        return AppLocalizations.of(context)!.unknownErrorMsg;
-      case PokemonListPageErrorCode.noInternetError:
-        return AppLocalizations.of(context)!.noInternetErrorMsg;
-      default:
-        return AppLocalizations.of(context)!.unknownErrorMsg;
-    }
   }
 }

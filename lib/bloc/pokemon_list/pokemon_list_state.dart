@@ -1,5 +1,7 @@
 import 'package:pokemon_app/DTO/bloc_pokemon.dart';
 
+import '../../exceptions.dart';
+
 abstract class PokemonListState{
   const PokemonListState();
 }
@@ -20,15 +22,8 @@ class LoadedState extends PokemonListState {
   });
 }
 
-enum PokemonListPageErrorCode {
-   unknownError,
-   networkError,
-   noInternetError,
-   dbError,
-}
-
 class ErrorState extends PokemonListState {
-  final PokemonListPageErrorCode errorCode;
+  final Failure error;
 
-  const ErrorState(this.errorCode);
+  const ErrorState(this.error);
 }

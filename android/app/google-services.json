@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "885475738084",
+    "project_id": "pokmonapp",
+    "storage_bucket": "pokmonapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:885475738084:android:3f620c97a57f7237e9c7f1",
+        "android_client_info": {
+          "package_name": "com.alexanderkulsha.pokemonapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "885475738084-4np3q0so0oc79ut037cjim1crr8atioe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQZyHWHJPgZhhe4co85VLfeGL66RW56BQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "885475738084-4np3q0so0oc79ut037cjim1crr8atioe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

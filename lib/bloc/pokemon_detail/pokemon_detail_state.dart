@@ -1,5 +1,7 @@
 import 'package:pokemon_app/entities/pokemon_detail.dart';
 
+import '../../exceptions.dart';
+
 abstract class PokemonDetailState{
   const PokemonDetailState();
 }
@@ -12,15 +14,8 @@ class LoadedState extends PokemonDetailState {
   const LoadedState(this.pokemonDetail);
 }
 
-enum PokemonDetailErrorCode {
-  unknownError,
-  networkError,
-  noInternetError,
-  dbError,
-}
-
 class ErrorState extends PokemonDetailState {
-  final PokemonDetailErrorCode errorCode;
+  final Failure error;
 
-  const ErrorState(this.errorCode);
+  const ErrorState(this.error);
 }

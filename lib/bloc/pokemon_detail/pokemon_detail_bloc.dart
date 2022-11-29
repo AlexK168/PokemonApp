@@ -25,22 +25,14 @@ class PokemonDetailBloc extends Bloc<PokemonDetailEvent, PokemonDetailState> {
       List<Failure> errors = response.errors;
 
       for (Failure f in errors) {
-        if (f == Failure.noInternetError) {
-          emit(const ErrorState(PokemonDetailErrorCode.noInternetError));
-        } else if (f == Failure.networkError) {
-          emit(const ErrorState(PokemonDetailErrorCode.networkError));
-        } else if (f == Failure.dbError){
-          emit(const ErrorState(PokemonDetailErrorCode.dbError));
-        } else {
-          emit(const ErrorState(PokemonDetailErrorCode.unknownError));
-        }
+        emit(ErrorState(f));
       }
 
       PokemonDetail? pokemon = response.data;
       if (pokemon != null) {
         emit(LoadedState(pokemon));
       } else if (errors.isEmpty) {
-        emit(const ErrorState(PokemonDetailErrorCode.unknownError));
+        emit(const ErrorState(Failure.unknownError));
       }
     });
   }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_event.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_state.dart';
 import 'package:pokemon_app/services/pokemon_type_image_service.dart';
+import 'package:pokemon_app/utils/get_error_message.dart';
 import 'package:pokemon_app/utils/show_snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pokemon_app/widgets/property.dart';
@@ -53,8 +54,10 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> with TickerProvid
         body: BlocConsumer<PokemonDetailBloc, PokemonDetailState>(
           listener: (context, state) {
             if (state is ErrorState) {
-              String errMsg = getErrorString(state);
-              showSnackBar(context, errMsg);
+              showSnackBar(
+                context,
+                getErrorMessage(context, state.error),
+              );
             }
           },
           builder: (context, state) {
@@ -143,7 +146,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> with TickerProvid
             }
             else if (state is ErrorState) {
               return Center(
-                child: Text(getErrorString(state)),
+                child: Text(getErrorMessage(context, state.error)),
               );
             }
             return Container();
@@ -151,20 +154,5 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> with TickerProvid
         ),
       ),
     );
-  }
-
-  String getErrorString(ErrorState state) {
-    switch(state.errorCode) {
-      case PokemonDetailErrorCode.networkError:
-        return AppLocalizations.of(context)!.networkErrorMsg;
-      case PokemonDetailErrorCode.dbError:
-        return AppLocalizations.of(context)!.cacheErrorMsg;
-      case PokemonDetailErrorCode.unknownError:
-        return AppLocalizations.of(context)!.unknownErrorMsg;
-      case PokemonDetailErrorCode.noInternetError:
-        return AppLocalizations.of(context)!.noInternetErrorMsg;
-      default:
-        return AppLocalizations.of(context)!.unknownErrorMsg;
-    }
   }
 }
