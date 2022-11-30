@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:pokemon_app/exceptions.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-String getErrorMessage(BuildContext context, Failure error) {
+String getErrorMessageFromFailure(BuildContext context, Failure error) {
   final locale = AppLocalizations.of(context);
   if (locale == null) {
-    return "error";
+    return "Error";
   }
   if (error == Failure.noInternetError) {
     return locale.noInternetErrorMsg;

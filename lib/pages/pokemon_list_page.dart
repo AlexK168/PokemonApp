@@ -4,7 +4,7 @@ import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_bloc.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_event.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_state.dart';
 import 'package:pokemon_app/pages/pokemon_detail_page.dart';
-import 'package:pokemon_app/utils/get_error_message.dart';
+import 'package:pokemon_app/utils/get_failure_message.dart';
 import 'package:pokemon_app/utils/show_snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -25,7 +25,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
           if (state is ErrorState) {
             showSnackBar(
               context,
-              getErrorMessage(context, state.error),
+              getErrorMessageFromFailure(context, state.error),
             );
           }
         },
@@ -130,7 +130,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
                 }
                 else if (state is ErrorState) {
                   return Center(
-                    child: Text(getErrorMessage(context, state.error)),
+                    child: Text(getErrorMessageFromFailure(context, state.error)),
                   );
                 }
                 return Container();
