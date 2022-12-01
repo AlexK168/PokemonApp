@@ -11,7 +11,6 @@ class PokemonDbService {
   static const String _pokemonDbBoxName = 'pokemon_box';
 
   Future init() async {
-    await Hive.initFlutter();
     Hive.registerAdapter(HivePokemonAdapter());
     _box = await Hive.openBox(_pokemonDbBoxName);
   }

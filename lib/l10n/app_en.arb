@@ -8,19 +8,30 @@
   "weightWithColon": "Weight: ",
   "pokemonTypesWithColon": "Pokemon types:",
   "blank": "",
+
   "networkErrorMsg": "Network error occurred :(",
   "cacheErrorMsg": "Can't load data from cache :(",
   "unknownErrorMsg": "Some unknown error occurred. Sry :(",
   "noInternetErrorMsg": "No internet connection.",
+  "loginErrorMsg": "Can't log in.",
+  "invalidEmailErrorMsg": "Invalid email",
+  "genericErrorMsg": "Error",
+  "wrongPasswordErrorMsg": "Wrong password",
+  "userDisabledErrorMsg": "User is disabled",
+  "userNotFoundErrorMsg": "User not found",
+  "logoutErrorMsg": "Logout error",
+  "signupErrorMsg": "Signup error",
+
   "emptyPokemonList": "All pokemons disappeared...",
   "passwordTooShort": "Password is too short",
   "passwordTooLong": "Password is too long",
   "noDigitsInPassword": "Password has to contain at least 1 digit",
   "noSpecialCharsInPassword": "Password has to contain at least 1 special character",
   "passwordEmpty": "Password can't be empty",
-  "genericError": "Error",
-  "invalidEmail": "Invalid email",
+
+
   "email": "Email",
   "password": "Password",
-  "loginCapitalized": "LOGIN"
+  "loginCapitalized": "LOGIN",
+  "greeting": "Hello again!"
 }

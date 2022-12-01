@@ -45,6 +45,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_auth: ^4.1.4
   formz: ^0.4.1
+  flow_builder: ^0.0.9
 
 dev_dependencies:
   flutter_test:

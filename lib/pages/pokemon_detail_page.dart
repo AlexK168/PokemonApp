@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_event.dart';
 import 'package:pokemon_app/bloc/pokemon_detail/pokemon_detail_state.dart';
 import 'package:pokemon_app/services/pokemon_type_image_service.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pokemon_app/widgets/property.dart';
 import 'package:pokemon_app/widgets/type.dart';
 import '../bloc/pokemon_detail/pokemon_detail_bloc.dart';
+import '../repository/repository.dart';
 import '../widgets/avatar.dart';
 
 class PokemonDetailPage extends StatefulWidget {
@@ -46,7 +48,9 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> with TickerProvid
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => PokemonDetailBloc()..add(LoadDetailEvent(widget.pokemonDetailUrl)),
+      create: (context) => PokemonDetailBloc(
+        GetIt.instance<PokemonRepository>(),
+      )..add(LoadDetailEvent(widget.pokemonDetailUrl)),
       child: Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.pokemonDetailTitle),
@@ -62,6 +66,12 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> with TickerProvid
           },
           builder: (context, state) {
             if (state is LoadedState) {
+              final List<Widget> pokemonProperties = _getPokemonProperties(
+                state,
+                const TextStyle(
+                  fontSize: 16,
+                )
+              );
               return Container(
                 padding: const EdgeInsets.all(8),
                 child: Column(
@@ -111,25 +121,9 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> with TickerProvid
                           ),
                           const SizedBox(height: 8,),
                           Expanded(
-                            child: ListView(
-                              children: [
-                                Property(
-                                  leading: const Icon(Icons.height, size: 40,),
-                                  text: "${AppLocalizations.of(context)!.heightWithColon}"
-                                    "${state.pokemonDetail.height?.toString() ?? AppLocalizations.of(context)!.unknown}",
-                                  textStyle: const TextStyle(
-                                    fontSize: 16
-                                  ),
-                                ),
-                                Property(
-                                  leading: const Icon(Icons.scale, size: 40,),
-                                  text: "${AppLocalizations.of(context)!.weightWithColon}"
-                                    "${state.pokemonDetail.weight?.toString() ?? AppLocalizations.of(context)!.unknown}",
-                                  textStyle: const TextStyle(
-                                    fontSize: 16
-                                  ),
-                                ),
-                              ],
+                            child: ListView.builder(
+                              itemCount: pokemonProperties.length,
+                              itemBuilder: (BuildContext context, int index) => pokemonProperties[index],
                             ),
                           ),
                         ],
@@ -154,5 +148,22 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> with TickerProvid
         ),
       ),
     );
+  }
+
+  List<Widget> _getPokemonProperties(LoadedState state, TextStyle textStyle) {
+    return [
+      Property(
+        leading: const Icon(Icons.height, size: 40,),
+        text: "${AppLocalizations.of(context)!.heightWithColon}"
+            "${state.pokemonDetail.height?.toString() ?? AppLocalizations.of(context)!.unknown}",
+        textStyle: textStyle,
+      ),
+      Property(
+        leading: const Icon(Icons.scale, size: 40,),
+        text: "${AppLocalizations.of(context)!.weightWithColon}"
+            "${state.pokemonDetail.weight?.toString() ?? AppLocalizations.of(context)!.unknown}",
+        textStyle: textStyle,
+      ),
+    ];
   }
 }

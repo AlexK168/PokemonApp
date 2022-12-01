@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_bloc.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_event.dart';
 import 'package:pokemon_app/bloc/pokemon_list/pokemon_list_state.dart';
@@ -8,8 +9,14 @@ import 'package:pokemon_app/utils/get_failure_message.dart';
 import 'package:pokemon_app/utils/show_snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../bloc/app/app_bloc.dart';
+import '../bloc/app/app_event.dart';
+import '../repository/repository.dart';
+
 class PokemonListPage extends StatefulWidget {
   const PokemonListPage({Key? key}) : super(key: key);
+
+  static Page<void> page() => const MaterialPage<void>(child: PokemonListPage());
 
   @override
   State<PokemonListPage> createState() => _PokemonListPageState();
@@ -19,7 +26,9 @@ class _PokemonListPageState extends State<PokemonListPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => PokemonListBloc()..add(const LoadListEvent()),
+      create: (context) => PokemonListBloc(
+        GetIt.instance<PokemonRepository>(),
+      )..add(const LoadListEvent()),
       child: BlocConsumer<PokemonListBloc, PokemonListState>(
         listener: (context, state) {
           if (state is ErrorState) {
@@ -60,6 +69,22 @@ class _PokemonListPageState extends State<PokemonListPage> {
                     return Container();
                   }
                 }),
+                Builder(
+                  builder: (context) {
+                    if (state is LoadedState) {
+                      return IconButton(
+                        key: const Key('homePage_logout_iconButton'),
+                        icon: const Icon(Icons.exit_to_app),
+                        onPressed: () {
+                          context.read<AppBloc>().add(const LogoutRequestedEvent());
+                        },
+                      );
+                    }
+                    else {
+                      return Container();
+                    }
+                  }
+                )
               ],
             ),
             body: Builder(
@@ -86,7 +111,7 @@ class _PokemonListPageState extends State<PokemonListPage> {
                                     const Icon(Icons.favorite_border),
                                   onPressed: () {
                                     BlocProvider.of<PokemonListBloc>(context).add(
-                                      SwitchPokemonFavoriteEvent(
+                                      SwitchFavoritePokemonEvent(
                                         state.pokemonList[index].url
                                       )
                                     );

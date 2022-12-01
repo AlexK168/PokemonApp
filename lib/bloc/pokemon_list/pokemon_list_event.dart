@@ -14,9 +14,9 @@ class LoadPrevEvent extends PokemonListEvent {
   const LoadPrevEvent();
 }
 
-class SwitchPokemonFavoriteEvent extends PokemonListEvent {
+class SwitchFavoritePokemonEvent extends PokemonListEvent {
   final String url;
-  const SwitchPokemonFavoriteEvent(this.url);
+  const SwitchFavoritePokemonEvent(this.url);
 }
 
 class SwitchFavoriteModeEvent extends PokemonListEvent {

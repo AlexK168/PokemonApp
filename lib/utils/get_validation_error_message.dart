@@ -7,16 +7,18 @@ String getPasswordErrorMessage(BuildContext context, PasswordValidationError? er
   if (locale == null) {
     return "Error";
   }
-  if (error == PasswordValidationError.noSpecialChars) {
-    return locale.noSpecialCharsInPassword;
-  } else if (error == PasswordValidationError.noDigits) {
-    return locale.noDigitsInPassword;
-  } else if (error == PasswordValidationError.tooLong){
-    return locale.passwordTooLong;
-  } else if (error == PasswordValidationError.tooShort){
-    return locale.passwordTooShort;
-  } else if (error == PasswordValidationError.empty) {
-    return locale.passwordEmpty;
+  switch(error) {
+    case PasswordValidationError.empty:
+      return locale.passwordEmpty;
+    case PasswordValidationError.tooShort:
+      return locale.passwordTooShort;
+    case PasswordValidationError.tooLong:
+      return locale.passwordTooLong;
+    case PasswordValidationError.noDigits:
+      return locale.noDigitsInPassword;
+    case PasswordValidationError.noSpecialChars:
+      return locale.noSpecialCharsInPassword;
+    default:
+      return locale.genericErrorMsg;
   }
-  return locale.genericError;
 }

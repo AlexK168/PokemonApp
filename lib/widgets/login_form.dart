@@ -3,11 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:pokemon_app/bloc/login/login_cubit.dart';
 import 'package:pokemon_app/bloc/login/login_state.dart';
+import 'package:pokemon_app/exceptions.dart';
+import 'package:pokemon_app/utils/get_failure_message.dart';
 import 'package:pokemon_app/utils/get_validation_error_message.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pokemon_app/utils/show_snackbar.dart';
+import 'package:pokemon_app/widgets/greeting.dart';
 
 class LoginForm extends StatelessWidget {
-  static const String _pokeballImagePath = "assets/images/pokeball.png";
+
   const LoginForm({Key? key}) : super(key: key);
 
   @override
@@ -15,7 +19,9 @@ class LoginForm extends StatelessWidget {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
         if (state.status.isSubmissionFailure) {
-          // display error
+          showSnackBar(context, getErrorMessageFromFailure(
+            context, state.error ?? Failure.loginError
+          ));
         }
       },
       child: Container(
@@ -25,20 +31,7 @@ class LoginForm extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Center(
-                child: SizedBox(
-                  height: 170,
-                  child: Image.asset(_pokeballImagePath),
-                ),
-              ),
-              const Center(
-                child: Text(
-                  'Hello again!',
-                  style: TextStyle(
-                    fontSize: 40,
-                  ),
-                ),
-              ),
+              const Greeting(),
               const SizedBox(height: 20),
               _EmailInput(),
               const SizedBox(height: 8),
@@ -69,7 +62,7 @@ class _EmailInput extends StatelessWidget {
             ),
             labelText: AppLocalizations.of(context)!.email,
             errorText: state.email.invalid
-              ? AppLocalizations.of(context)!.invalidEmail
+              ? AppLocalizations.of(context)!.invalidEmailErrorMsg
               : null,
           ),
         );
@@ -117,20 +110,21 @@ class _LoginButton extends StatelessWidget {
     return BlocBuilder<LoginCubit, LoginState>(
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
-        return state.status.isSubmissionInProgress
-          ? const CircularProgressIndicator()
-          : ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+        return SizedBox(
+          height: 40,
+          child: state.status.isSubmissionInProgress
+            ? const Center(child: CircularProgressIndicator())
+            : ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
                 ),
-              ),
-              onPressed: state.status.isValidated
-                ? () {
-                  // log in
-                }
-                : null,
-              child: Text(AppLocalizations.of(context)!.loginCapitalized),
+                onPressed: state.status.isValidated
+                  ? () => context.read<LoginCubit>().logInWithCredentials()
+                  : null,
+                child: Text(AppLocalizations.of(context)!.loginCapitalized),
+          ),
         );
       },
     );

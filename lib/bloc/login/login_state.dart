@@ -1,5 +1,6 @@
 import 'package:formz/formz.dart';
 
+import '../../exceptions.dart';
 import '../../formz_models/email.dart';
 import '../../formz_models/password.dart';
 
@@ -7,14 +8,14 @@ class LoginState {
   final Email email;
   final Password password;
   final FormzStatus status;
-  final String? errorMessage;
+  final Failure? error;
   final bool isPasswordVisible;
 
   LoginState({
     this.email = const Email.pure(),
     this.password = const Password.pure(),
     this.status = FormzStatus.pure,
-    this.errorMessage,
+    this.error,
     this.isPasswordVisible = false,
   });
 
@@ -22,14 +23,14 @@ class LoginState {
     Email? email,
     Password? password,
     FormzStatus? status,
-    String? errorMessage,
+    Failure? error,
     bool? isPasswordVisible,
   }) {
     return LoginState(
       email: email ?? this.email,
       password: password ?? this.password,
       status: status ?? this.status,
-      errorMessage: errorMessage ?? this.errorMessage,
+      error: error ?? this.error,
       isPasswordVisible: isPasswordVisible ?? this.isPasswordVisible,
     );
   }

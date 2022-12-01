@@ -7,7 +7,6 @@ class FavoritesService{
   static const String _favoritesBoxName = 'favorites_box';
 
   Future init() async {
-    await Hive.initFlutter();
     _box = await Hive.openBox(_favoritesBoxName);
   }
 
