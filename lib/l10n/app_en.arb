@@ -16,11 +16,14 @@
   "loginErrorMsg": "Can't log in.",
   "invalidEmailErrorMsg": "Invalid email",
   "genericErrorMsg": "Error",
-  "wrongPasswordErrorMsg": "Wrong password",
-  "userDisabledErrorMsg": "User is disabled",
-  "userNotFoundErrorMsg": "User not found",
-  "logoutErrorMsg": "Logout error",
-  "signupErrorMsg": "Signup error",
+  "wrongPasswordErrorMsg": "Wrong password.",
+  "userDisabledErrorMsg": "User is disabled.",
+  "userNotFoundErrorMsg": "User not found.",
+  "logoutErrorMsg": "Logout error.",
+  "signupErrorMsg": "Signup error.",
+  "emailInUseErrorMsg": "Email is already in use.",
+  "weakPasswordErrorMsg": "Password is weak.",
+  "notAllowed": "Operation is not allowed. Deal with it.",
 
   "emptyPokemonList": "All pokemons disappeared...",
   "passwordTooShort": "Password is too short",
@@ -28,10 +31,16 @@
   "noDigitsInPassword": "Password has to contain at least 1 digit",
   "noSpecialCharsInPassword": "Password has to contain at least 1 special character",
   "passwordEmpty": "Password can't be empty",
-
+  "passwordNotMatching": "Password doesn't match",
 
   "email": "Email",
   "password": "Password",
   "loginCapitalized": "LOGIN",
-  "greeting": "Hello again!"
+  "helloAgain": "Hello again!",
+  "welcome": "Welcome!",
+  "noAccount": "Don't have an account?",
+  "alreadyHaveAccount": "Already have an account?",
+  "login": "Log in",
+  "registerNow": "Register now",
+  "registerCapitalized": "REGISTER"
 }

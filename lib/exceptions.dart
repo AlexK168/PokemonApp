@@ -10,4 +10,7 @@ enum Failure{
   wrongPassword,
   logoutError,
   signUpError,
+  emailAlreadyInUse,
+  operationNotAllowed,
+  weakPassword,
 }

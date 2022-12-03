@@ -28,6 +28,8 @@ class AuthenticationRepository {
         email: email,
         password: password,
       );
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw e.toFailure;
     } catch (_) {
       throw Failure.signUpError;
     }
@@ -78,6 +80,12 @@ extension on firebase_auth.FirebaseAuthException {
         return Failure.userNotFound;
       case 'wrong-password':
         return Failure.wrongPassword;
+      case 'email-already-in-use':
+        return Failure.emailAlreadyInUse;
+      case 'operation-not-allowed':
+        return Failure.operationNotAllowed;
+      case 'weak-password':
+        return Failure.weakPassword;
       default:
         return Failure.unknownError;
     }

@@ -30,6 +30,12 @@ String getErrorMessageFromFailure(BuildContext context, Failure error) {
       return locale.logoutErrorMsg;
     case Failure.signUpError:
       return locale.signupErrorMsg;
+    case Failure.emailAlreadyInUse:
+      return locale.emailInUseErrorMsg;
+    case Failure.operationNotAllowed:
+      return locale.notAllowed;
+    case Failure.weakPassword:
+      return locale.weakPasswordErrorMsg;
     default:
       return locale.genericErrorMsg;
   }
