@@ -3,22 +3,22 @@ import '../entities/pokemon_detail.dart';
 import '../exceptions.dart';
 
 abstract class PokemonRepository{
-  Future<PokemonRepositoryResponse<PokemonDetail>> getPokemon(String url);
-  Future<PokemonRepositoryResponse<BlocPokemonList>> getPokemonListWithCount({
+  Future<PokemonDetail> getPokemon(String url);
+  Future<BlocPokemonList> getPokemonListWithCount({
     required int limit,
     required int offset,
   });
-  Future<PokemonRepositoryResponse<bool>> switchFavorite(String url);
+  Future<bool> switchFavorite(String url);
 
-  Future<PokemonRepositoryResponse<BlocPokemonList>> getFavoritePokemonListWithCount({
+  Future<BlocPokemonList> getFavoritePokemonListWithCount({
     required int limit,
     required int offset,
   });
 }
 
-class PokemonRepositoryResponse<T> {
+class PokemonRepositoryError<T> {
   final List<Failure> errors;
   final T? data;
 
-  PokemonRepositoryResponse(this.data, this.errors);
+  PokemonRepositoryError(this.data, this.errors);
 }

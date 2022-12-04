@@ -11,7 +11,10 @@ void setupGetIt() {
   GetIt.instance.registerSingletonAsync<PokemonDbService>(() async => PokemonDbService()..init());
   GetIt.instance.registerSingletonAsync<FavoritesService>(() async => FavoritesService()..init());
   GetIt.instance.registerSingletonWithDependencies<PokemonRepository>(
-    () => PokemonRepositoryImpl(),
+    () => PokemonRepositoryImpl(
+        apiService: GetIt.instance<PokemonApiService>(),
+        dbService: GetIt.instance<PokemonDbService>(),
+        favoritesService: GetIt.instance<FavoritesService>()),
     dependsOn: [PokemonDbService, FavoritesService],
   );
   GetIt.instance.registerSingletonAsync<AuthenticationRepository>(

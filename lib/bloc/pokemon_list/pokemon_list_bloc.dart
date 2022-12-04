@@ -38,19 +38,27 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
 
   void _onLoadList(LoadListEvent event, Emitter<PokemonListState> emit) async {
     emit(LoadingState());
-    final response = _modeController.mode == Mode.showAll ?
-    await _pokemonRepository.getPokemonListWithCount(
-      limit: _paginationService.limit,
-      offset: _paginationService.currentOffset,
-    ):
-    await _pokemonRepository.getFavoritePokemonListWithCount(
-      limit: _paginationService.limit,
-      offset: _paginationService.currentOffset,
-    );
-    List<Failure> errors = response.errors;
-    _emitErrors(emit, errors);
+    BlocPokemonList? pokemonList;
+    try {
+      pokemonList = _modeController.mode == Mode.showAll ?
+      await _pokemonRepository.getPokemonListWithCount(
+        limit: _paginationService.limit,
+        offset: _paginationService.currentOffset,
+      ):
+      await _pokemonRepository.getFavoritePokemonListWithCount(
+        limit: _paginationService.limit,
+        offset: _paginationService.currentOffset,
+      );
+    } on PokemonRepositoryError catch(e) {
+      List<Failure> errors = e.errors;
+      _emitErrors(emit, errors);
+      pokemonList = e.data;
+      if (errors.isEmpty && pokemonList == null) {
+        emit(const ErrorState(Failure.unknownError));
+        return;
+      }
+    }
 
-    BlocPokemonList? pokemonList = response.data;
     if (pokemonList != null) {
       _paginationService.updateCount(pokemonList.count);
       emit(LoadedState(
@@ -59,8 +67,6 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
           endOfList: _paginationService.endOfList(),
           favoritesActive: _modeController.mode == Mode.showFavoritesOnly
       ));
-    } else if (errors.isEmpty) {
-      emit(const ErrorState(Failure.unknownError));
     }
   }
 
@@ -72,9 +78,12 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
 
   void _onFavoritePokemonSwitch(SwitchFavoritePokemonEvent event, Emitter<PokemonListState> emit) async {
     emit(LoadingState());
-    final response = await _pokemonRepository.switchFavorite(event.url);
-    List<Failure> errors = response.errors;
-    _emitErrors(emit, errors);
+    try {
+      await _pokemonRepository.switchFavorite(event.url);
+    } on PokemonRepositoryError catch (e) {
+      List<Failure> errors = e.errors;
+      _emitErrors(emit, errors);
+    }
     add(const LoadListEvent());
   }
 }
